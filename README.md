@@ -15,8 +15,8 @@ go install github.com/yoshihiro-shu/protoc-gen-connect-go-mpcserver@latest
 ## 使用方法
 
 ```bash
-protoc --connect-go-mpcserver_out=. \
-       --connect-go-mpcserver_opt=module=github.com/example/myproject \
+protoc --protoc-gen-connect-go-mpcserver_out=. \
+       --protoc-gen-connect-go-mpcserver_opt=module=github.com/example/myproject \
        ./proto/*.proto
 ```
 
@@ -24,12 +24,11 @@ protoc --connect-go-mpcserver_out=. \
 
 ```yaml
 # buf.gen.yaml
-version: v1
+version: v2
 plugins:
-  - plugin: connect-go-mpcserver
-    out: gen
-    opt:
-      - paths=source_relative
+  - local: protoc-gen-connect-go-mpcserver
+    out: gen/proto
+    opt: paths=source_relative
 ```
 
 そして、以下のコマンドを実行:
