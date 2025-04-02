@@ -45,7 +45,6 @@ buf generate
 - リクエスト定義コメントをツール説明に変換
 - リクエストフィールドを自動的にツールパラメータに変換
 - Connectクライアントとの連携機能
-- protovalidateからのバリデーションルールをMCPサーバーのパラメータバリデーションに変換
 
 ## コメント規約
 
@@ -65,35 +64,6 @@ rpc GetUser(GetUserRequest) returns (GetUserResponse);
 message GetUserRequest {
   string user_id = 1; // ユーザーID
 }
-```
-
-## protovalidateサポート
-
-buf.build/bufbuild/protovalidateで定義されたバリデーションルールはMCPサーバーのパラメータ制約として反映されます：
-
-```protobuf
-import "buf/validate/validate.proto";
-
-message GetUserRequest {
-  string user_id = 1 [(buf.validate.field).string = {
-    min_len: 3,
-    max_len: 50,
-    pattern: "^[a-zA-Z0-9_-]+$",
-    required: true
-  }]; // ユーザーID
-}
-```
-
-上記は以下のようなMCPサーバーのパラメータ定義に変換されます：
-
-```go
-mcp.WithString("user_id",
-  mcp.Required(),
-  mcp.Description("ユーザーID"),
-  mcp.MinLength(3),
-  mcp.MaxLength(50),
-  mcp.Pattern("^[a-zA-Z0-9_-]+$"),
-),
 ```
 
 ## 生成コード例
