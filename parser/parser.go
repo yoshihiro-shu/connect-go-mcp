@@ -76,7 +76,7 @@ func ParseField(field *protogen.Field) Field {
 	comment := extractComment(field.Comments.Leading)
 
 	return Field{
-		Name:        string(field.Desc.Name()),
+		Name:        string(field.Desc.Name()), //　FIX: リクエストの構造体と同じ名前になっていない
 		Type:        getFieldType(field.Desc),
 		Comment:     comment,
 		IsRequired:  isRequired(comment),
