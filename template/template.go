@@ -40,10 +40,10 @@ func generateImports(g *protogen.GeneratedFile, services []parser.Service) {
 	g.P("import (")
 	g.P(`	"context"`)
 	g.P(`	"fmt"`)
-	g.P(`	"time"`)
 	g.P()
 	g.P(`	"connectrpc.com/connect"`)
-	g.P(`	"github.com/mark3labs/mcp-go"`)
+	g.P(`	"github.com/mark3labs/mcp-go/mcp"`)
+	g.P(`	"github.com/mark3labs/mcp-go/server"`)
 	g.P(")")
 }
 
