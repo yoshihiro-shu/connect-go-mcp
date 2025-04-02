@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/yoshihiro-shu/protoc-gen-connect-go-mpcserver/internal/parser"
+	"github.com/yoshihiro-shu/protoc-gen-connect-go-mpcserver/parser"
 	"google.golang.org/protobuf/compiler/protogen"
 )
 

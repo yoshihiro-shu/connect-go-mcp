@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"github.com/yoshihiro-shu/protoc-gen-connect-go-mpcserver/internal/parser"
-	"github.com/yoshihiro-shu/protoc-gen-connect-go-mpcserver/internal/template"
+	"github.com/yoshihiro-shu/protoc-gen-connect-go-mpcserver/parser"
+	"github.com/yoshihiro-shu/protoc-gen-connect-go-mpcserver/template"
 	"google.golang.org/protobuf/compiler/protogen"
 )
 
