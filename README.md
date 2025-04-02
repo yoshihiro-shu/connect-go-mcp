@@ -26,6 +26,12 @@ protoc --protoc-gen-connect-go-mpcserver_out=. \
 # buf.gen.yaml
 version: v2
 plugins:
+  - local: protoc-gen-go
+    out: gen/proto
+    opt: paths=source_relative
+  - local: protoc-gen-go-grpc
+    out: gen/proto
+    opt: paths=source_relative
   - local: protoc-gen-connect-go-mpcserver
     out: gen/proto
     opt: paths=source_relative

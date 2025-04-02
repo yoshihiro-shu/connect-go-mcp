@@ -52,7 +52,7 @@ func generateServerWithTools(g *protogen.GeneratedFile, service parser.Service) 
 	clientName := lcFirst(service.Name) + "Client"
 
 	g.P("// NewMCPServerWithTools は設定済みの ", service.Name, " MCP サーバーを生成して返します")
-	g.P("func NewMCPServerWithTools(", clientName, " ", service.Name, "ServiceClient) *mcp.Server {")
+	g.P("func NewMCPServerWithTools(", clientName, " ", service.Name, "Client) *mcp.Server {")
 	g.P("  server := mcp.NewServer()")
 	g.P()
 
