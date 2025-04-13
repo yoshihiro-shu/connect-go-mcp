@@ -9,7 +9,7 @@ gRPCのProtocol BufferファイルからMCPServerを生成するプラグイン
 ## インストール
 
 ```bash
-go install github.com/yoshihiro-shu/protoc-gen-connect-go-mpcserver@latest
+go install github.com/yoshihiro-shu/cmd/protoc-gen-connect-go-mpcserver@latest
 ```
 
 ## 使用方法
