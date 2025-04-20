@@ -37,8 +37,15 @@ const (
 	GreetServiceGreetProcedure = "/greet.v1.GreetService/Greet"
 )
 
+// These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
+var (
+	greetServiceServiceDescriptor     = v1.File_greet_proto.Services().ByName("GreetService")
+	greetServiceGreetMethodDescriptor = greetServiceServiceDescriptor.Methods().ByName("Greet")
+)
+
 // GreetServiceClient is a client for the greet.v1.GreetService service.
 type GreetServiceClient interface {
+	// 挨拶
 	Greet(context.Context, *connect.Request[v1.GreetRequest]) (*connect.Response[v1.GreetResponse], error)
 }
 
@@ -51,12 +58,11 @@ type GreetServiceClient interface {
 // http://api.acme.com or https://acme.com/grpc).
 func NewGreetServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) GreetServiceClient {
 	baseURL = strings.TrimRight(baseURL, "/")
-	greetServiceMethods := v1.File_greet_proto.Services().ByName("GreetService").Methods()
 	return &greetServiceClient{
 		greet: connect.NewClient[v1.GreetRequest, v1.GreetResponse](
 			httpClient,
 			baseURL+GreetServiceGreetProcedure,
-			connect.WithSchema(greetServiceMethods.ByName("Greet")),
+			connect.WithSchema(greetServiceGreetMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
 	}
@@ -74,6 +80,7 @@ func (c *greetServiceClient) Greet(ctx context.Context, req *connect.Request[v1.
 
 // GreetServiceHandler is an implementation of the greet.v1.GreetService service.
 type GreetServiceHandler interface {
+	// 挨拶
 	Greet(context.Context, *connect.Request[v1.GreetRequest]) (*connect.Response[v1.GreetResponse], error)
 }
 
@@ -83,11 +90,10 @@ type GreetServiceHandler interface {
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
 func NewGreetServiceHandler(svc GreetServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
-	greetServiceMethods := v1.File_greet_proto.Services().ByName("GreetService").Methods()
 	greetServiceGreetHandler := connect.NewUnaryHandler(
 		GreetServiceGreetProcedure,
 		svc.Greet,
-		connect.WithSchema(greetServiceMethods.ByName("Greet")),
+		connect.WithSchema(greetServiceGreetMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
 	return "/greet.v1.GreetService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

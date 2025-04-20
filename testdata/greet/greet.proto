@@ -13,6 +13,7 @@ message GreetResponse {
   string greeting = 1; // 挨拶
 }
 
+// 挨拶サービス
 service GreetService {
   // 挨拶
   rpc Greet(GreetRequest) returns (GreetResponse) {}
