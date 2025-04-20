@@ -24,12 +24,6 @@ func GenerateCode(g *protogen.GeneratedFile, pkgName string, services []parser.S
 		// NewMCPServerWithTools 関数
 		generateServerWithTools(g, service)
 		g.P()
-
-		// ハンドラー実装
-		for _, method := range service.Methods {
-			generateHandler(g, service, method)
-			g.P()
-		}
 	}
 
 	return nil
@@ -44,17 +38,17 @@ func generateImports(g *protogen.GeneratedFile, services []parser.Service) {
 	g.P(`	"connectrpc.com/connect"`)
 	g.P(`	"github.com/mark3labs/mcp-go/mcp"`)
 	g.P(`	"github.com/mark3labs/mcp-go/server"`)
+	g.P(`	"github.com/yoshihiro-shu/protoc-gen-connect-go-mpcserver/connect_mpcserver"`)
 	g.P(")")
 }
 
 // generateServerWithTools はMCPサーバー初期化関数を生成します
 func generateServerWithTools(g *protogen.GeneratedFile, service parser.Service) {
-	clientName := lcFirst(service.Name) + "Client"
-
 	g.P("// NewMCPServerWithTools は設定済みの ", service.Name, " MCP サーバーを生成して返します")
-	g.P("func NewMCPServerWithTools(", clientName, " ", service.Name, "Client) *mcp.Server {")
+	g.P("func NewMCPServerWithTools(baseURL string, opts ...connect_mpcserver.ClientOption) *mcp.Server {")
 	g.P("  server := mcp.NewServer()")
 	g.P()
+	g.P("  toolHandler := connect_mpcserver.NewToolHandler(baseURL, opts...)")
 
 	// 各メソッドに対するツール登録
 	for _, method := range service.Methods {
@@ -87,7 +81,7 @@ func generateServerWithTools(g *protogen.GeneratedFile, service parser.Service) 
 
 		g.P("    ),")
 		g.P("    func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {")
-		g.P("      return handle", method.Name, "(ctx, req, ", clientName, ")")
+		g.P("      return toolHandler.Handle(ctx, req, \"", method.Name, "\")")
 		g.P("    },")
 		g.P("  )")
 		g.P()
@@ -172,16 +166,6 @@ func getParamType(goType string) string {
 // escapeString は文字列をエスケープします
 func escapeString(s string) string {
 	return strings.ReplaceAll(s, `"`, `\"`)
-}
-
-// lcFirst は最初の文字を小文字にします
-func lcFirst(s string) string {
-	if s == "" {
-		return ""
-	}
-	r := []rune(s)
-	r[0] = toLower(r[0])
-	return string(r)
 }
 
 // ucFirst は最初の文字を大文字にします
