@@ -37,7 +37,7 @@ func generateImports(g *protogen.GeneratedFile, services []parser.Service) {
 	g.P(`	"connectrpc.com/connect"`)
 	g.P(`	"github.com/mark3labs/mcp-go/mcp"`)
 	g.P(`	"github.com/mark3labs/mcp-go/server"`)
-	g.P(`	"connectgompc github.com/yoshihiro-shu/connect-go-mpc"`)
+	g.P(`	connectgompc "github.com/yoshihiro-shu/connect-go-mpc"`)
 	g.P(")")
 }
 
@@ -47,7 +47,7 @@ func generateServerWithTools(g *protogen.GeneratedFile, service parser.Service) 
 	g.P("func New", service.Name, "MCPServer(baseURL string, opts ...connectgompc.ClientOption) *mcp.Server {")
 	g.P("  server := server.NewMCPServer(\"", service.Name, "\", \"1.0.0\")")
 	g.P()
-	g.P("  toolHandler :=connectgompcNewToolHandler(baseURL, opts...)")
+	g.P("  toolHandler := connectgompc.NewToolHandler(baseURL, opts...)")
 
 	// 各メソッドに対するツール登録
 	for _, method := range service.Methods {
