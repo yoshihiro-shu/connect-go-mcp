@@ -43,7 +43,7 @@ func generateImports(g *protogen.GeneratedFile, services []parser.Service) {
 // generateServerWithTools はMCPサーバー初期化関数を生成します
 func generateServerWithTools(g *protogen.GeneratedFile, service parser.Service) {
 	g.P("// NewMCPServerWithTools は設定済みの ", service.Name, " MCP サーバーを生成して返します")
-	g.P("func New", service.Name, "MCPServer(baseURL string, opts ...connectgompc.ClientOption) *mcp.Server {")
+	g.P("func New", service.Name, "MCPServer(baseURL string, opts ...connectgompc.ClientOption) *server.MCPServer {")
 	g.P("  server := server.NewMCPServer(\"", service.Name, "\", \"1.0.0\")")
 	g.P()
 	g.P("  toolHandler := connectgompc.NewToolHandler(baseURL, opts...)")
