@@ -1,17 +1,37 @@
+/**
+ * Greet related messages.
+ *
+ * This file is really just an example. The data model is completely
+ * fictional.
+ */
 syntax = "proto3";
 
 package greet.v1;
 
 option go_package = "github.com/yoshihiro-shu/protoc-gen-connect-go-mpcserver/internal/gen/greet/v1;greetv1";
 
+// 挨拶リクエスト
 message GreetRequest {
-  string name = 1;
+  string name = 1; // 名前
 }
 
 message GreetResponse {
-  string greeting = 1;
+  string greeting = 1; // 挨拶
 }
 
+// ピンリクエスト
+message PingRequest {
+  string message = 1; // メッセージ
+}
+
+message PingResponse {
+  string message = 1; // メッセージ
+}
+
+// 挨拶サービス
 service GreetService {
+  // 挨拶
   rpc Greet(GreetRequest) returns (GreetResponse) {}
+  // ピン
+  rpc Ping(PingRequest) returns (PingResponse) {}
 }
