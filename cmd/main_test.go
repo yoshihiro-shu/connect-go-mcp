@@ -9,7 +9,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	greetv1 "github.com/yoshihiro-shu/protoc-gen-connect-go-mpcserver/testdata/greet/gen"
+	greetv1 "github.com/yoshihiro-shu/connect-go-mpc/testdata/greet/gen"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protodesc"
 	"google.golang.org/protobuf/types/descriptorpb"

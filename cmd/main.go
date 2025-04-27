@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/yoshihiro-shu/protoc-gen-connect-go-mpcserver/generator"
+	"github.com/yoshihiro-shu/connect-go-mpc/cmd/protoc-gen-connect-go-mpc/generator"
 	"google.golang.org/protobuf/compiler/protogen"
 )
 

@@ -1,4 +1,4 @@
-module github.com/yoshihiro-shu/protoc-gen-connect-go-mpcserver
+module github.com/yoshihiro-shu/connect-go-mpc
 
 go 1.23
 

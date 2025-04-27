@@ -14,7 +14,7 @@ import (
 	connect "connectrpc.com/connect"
 	context "context"
 	errors "errors"
-	v1 "github.com/yoshihiro-shu/protoc-gen-connect-go-mpcserver/internal/gen/greet/v1"
+	v1 "github.com/yoshihiro-shu/connect-go-mpc/internal/gen/greet/v1"
 	http "net/http"
 	strings "strings"
 )

@@ -1,22 +1,22 @@
-# protoc-gen-connect-go-mpcserver
+# connect-go-mpc
 
 gRPCのProtocol BufferファイルからMCPServerを生成するプラグイン
 
 ## 概要
 
-`protoc-gen-connect-go-mpcserver`は、Protocol Bufferの定義ファイル（.proto）からMark3Labs MCP Serverのツール実装を自動生成するプロトコルコンパイラプラグインです。gRPCサービスの各RPCメソッドをMCPサーバーのツールとして登録し、リクエスト処理をgRPCサーバーに転送する実装を生成します。
+`connect-go-mpc`は、Protocol Bufferの定義ファイル（.proto）からMark3Labs MCP Serverのツール実装を自動生成するプロトコルコンパイラプラグインです。gRPCサービスの各RPCメソッドをMCPサーバーのツールとして登録し、リクエスト処理をgRPCサーバーに転送する実装を生成します。
 
 ## インストール
 
 ```bash
-go install github.com/yoshihiro-shu/cmd/protoc-gen-connect-go-mpcserver@latest
+go install github.com/yoshihiro-shu/cmd/connect-go-mpc@latest
 ```
 
 ## 使用方法
 
 ```bash
-protoc --protoc-gen-connect-go-mpcserver_out=. \
-       --protoc-gen-connect-go-mpcserver_opt=module=github.com/example/myproject \
+protoc --connect-go-mpc_out=. \
+       --connect-go-mpc_opt=module=github.com/example/myproject \
        ./proto/*.proto
 ```
 
@@ -32,7 +32,7 @@ plugins:
   - local: protoc-gen-go-grpc
     out: gen/proto
     opt: paths=source_relative
-  - local: protoc-gen-connect-go-mpcserver
+  - local: connect-go-mpc
     out: gen/proto
     opt: paths=source_relative
 ```
@@ -166,8 +166,8 @@ func main() {
 
 ```bash
 # リポジトリのクローン
-git clone https://github.com/yoshihiro-shu/protoc-gen-connect-go-mpcserver.git
-cd protoc-gen-connect-go-mpcserver
+git clone https://github.com/yoshihiro-shu/connect-go-mpc.git
+cd connect-go-mpc
 
 # 依存関係のインストール
 go mod tidy
