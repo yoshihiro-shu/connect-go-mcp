@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
 
 	"github.com/yoshihiro-shu/connect-go-mpc/cmd/protoc-gen-connect-go-mpc/generator"
 	"google.golang.org/protobuf/compiler/protogen"
@@ -26,6 +27,10 @@ func main() {
 		},
 	}.Run(func(gen *protogen.Plugin) error {
 		// ジェネレーターを呼び出す
-		return generator.Generate(gen)
+		err := generator.Generate(gen)
+		if err != nil {
+			log.Printf("Error during generation: %v", err)
+		}
+		return err
 	})
 }
