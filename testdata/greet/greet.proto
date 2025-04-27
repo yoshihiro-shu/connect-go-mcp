@@ -13,8 +13,19 @@ message GreetResponse {
   string greeting = 1; // 挨拶
 }
 
+// ピンリクエスト
+message PingRequest {
+  string message = 1; // メッセージ
+}
+
+message PingResponse {
+  string message = 1; // メッセージ
+}
+
 // 挨拶サービス
 service GreetService {
   // 挨拶
   rpc Greet(GreetRequest) returns (GreetResponse) {}
+  // ピン
+  rpc Ping(PingRequest) returns (PingResponse) {}
 }
