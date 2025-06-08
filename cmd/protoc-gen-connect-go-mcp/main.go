@@ -34,6 +34,7 @@ func main() {
 						switch keyValue[0] {
 						case "package_suffix":
 							config.PackageSuffix = keyValue[1]
+							config.PackageSuffixSet = true
 						default:
 							// 未知のパラメータは無視
 						}
@@ -44,6 +45,7 @@ func main() {
 				switch name {
 				case "package_suffix":
 					config.PackageSuffix = value
+					config.PackageSuffixSet = true
 				default:
 					// 未知のパラメータは無視
 				}
