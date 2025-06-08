@@ -44,6 +44,12 @@ jobs:
 
       - name: Generate proto files
         run: |
+          # Add ~/.local/bin to PATH
+          export PATH="$HOME/.local/bin:/usr/local/bin:$PATH"
+          echo "PATH: $PATH"
+          which protoc-gen-connect-go-mcp || echo "protoc-gen-connect-go-mcp not found in PATH"
+
+          # Generate testdata proto files
           cd ./cmd/protoc-gen-connect-go-mcp
           sh ./generate.sh
 
