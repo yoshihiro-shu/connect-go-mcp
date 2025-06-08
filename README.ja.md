@@ -22,7 +22,7 @@ protoc --connect-go-mpc_out=. \
 
 または、bufを使用する場合:
 
-```yaml
+```diff_yaml
 # buf.gen.yaml
 version: v2
 plugins:
@@ -32,9 +32,9 @@ plugins:
   - local: protoc-gen-go-grpc
     out: gen/proto
     opt: paths=source_relative
-  - local: connect-go-mpc
-    out: gen/proto
-    opt: paths=source_relative
++ - local: connect-go-mpc
++   out: gen/proto
++   opt: paths=source_relative
 ```
 
 そして、以下のコマンドを実行:
