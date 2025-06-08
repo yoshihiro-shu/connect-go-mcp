@@ -10,7 +10,7 @@ A Protocol Buffers compiler plugin that generates MCP (Model Context Protocol) s
 
 - **Automatic MCP Server Generation**: Converts gRPC services to MCP server implementations
 - **Flexible Package Organization**: Supports custom package suffixes for better code organization
-- **Japanese Comment Support**: Preserves Japanese comments from proto files as tool descriptions
+- **Comment Preservation**: Preserves comments from proto files as tool descriptions
 - **Connect-Go Compatible**: Works alongside `protoc-gen-connect-go` for full gRPC support
 
 ## Installation
@@ -21,18 +21,10 @@ A Protocol Buffers compiler plugin that generates MCP (Model Context Protocol) s
 - Protocol Buffers compiler (`protoc`)
 - `buf` CLI tool (recommended)
 
-### Install from Source
+### Install
 
 ```bash
 go install github.com/yoshihiro-shu/connect-go-mcp/cmd/protoc-gen-connect-go-mcp@latest
-```
-
-### Build Locally
-
-```bash
-git clone https://github.com/yoshihiro-shu/connect-go-mcp.git
-cd connect-go-mcp/cmd/protoc-gen-connect-go-mcp
-go build -o protoc-gen-connect-go-mcp .
 ```
 
 ## Usage
@@ -123,15 +115,15 @@ option go_package = "github.com/example/gen/greet/v1;greetv1";
 
 // Greeting service for MCP demonstration
 service GreetService {
-  // 挨拶RPC
+  // Greet RPC
   rpc Greet(GreetRequest) returns (GreetResponse);
-  
-  // ピンRPC  
+
+  // Ping RPC
   rpc Ping(PingRequest) returns (PingResponse);
 }
 
 message GreetRequest {
-  // 挨拶リクエスト
+  // Greeting request
   string name = 1;
 }
 
@@ -140,7 +132,7 @@ message GreetResponse {
 }
 
 message PingRequest {
-  // ピンリクエスト
+  // Ping request
   string message = 1;
 }
 
@@ -157,7 +149,7 @@ package greetv1mcp
 
 import (
     "context"
-    
+
     "github.com/mark3labs/mcp-go/mcp"
     "github.com/mark3labs/mcp-go/server"
     connectgomcp "github.com/yoshihiro-shu/connect-go-mcp"
@@ -166,29 +158,29 @@ import (
 // NewGreetServiceMCPServer creates a configured MCP server for GreetService
 func NewGreetServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) *server.MCPServer {
     server := server.NewMCPServer("GreetService", "1.0.0")
-    
+
     toolHandler := connectgomcp.NewToolHandler(baseURL, opts...)
-    
+
     server.AddTool(
-        mcp.NewTool("挨拶RPC",
-            mcp.WithDescription("挨拶リクエスト"),
+        mcp.NewTool("Greet RPC",
+            mcp.WithDescription("Greeting request"),
             mcp.WithString("name"),
         ),
         func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
             return toolHandler.Handle(ctx, req, "Greet")
         },
     )
-    
+
     server.AddTool(
-        mcp.NewTool("ピンRPC",
-            mcp.WithDescription("ピンリクエスト"),
+        mcp.NewTool("Ping RPC",
+            mcp.WithDescription("Ping request"),
             mcp.WithString("message"),
         ),
         func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
             return toolHandler.Handle(ctx, req, "Ping")
         },
     )
-    
+
     return server
 }
 ```
@@ -200,14 +192,14 @@ package main
 
 import (
     "log"
-    
+
     greetv1mcp "github.com/example/gen/greet/v1/greetv1mcp"
 )
 
 func main() {
     // Create MCP server instance
     mcpServer := greetv1mcp.NewGreetServiceMCPServer("http://localhost:8080")
-    
+
     // Start the MCP server
     if err := mcpServer.Serve(); err != nil {
         log.Fatal(err)
@@ -222,7 +214,7 @@ The plugin generates:
 1. **MCP Server Constructor**: `New{ServiceName}MCPServer()` function
 2. **Tool Definitions**: Each RPC method becomes an MCP tool
 3. **Parameter Mapping**: Proto message fields become tool parameters
-4. **Japanese Comments**: Preserved as tool descriptions
+4. **Comments**: Preserved as tool descriptions
 5. **Type Safety**: Full Go type safety for all operations
 
 ## Integration with MCP Ecosystem

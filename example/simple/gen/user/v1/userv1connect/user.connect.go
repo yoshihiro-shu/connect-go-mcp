@@ -49,11 +49,11 @@ const (
 
 // UserServiceClient is a client for the user.v1.UserService service.
 type UserServiceClient interface {
-	// GetUser ユーザー情報取得
+	// GetUser - Get user information
 	GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error)
-	// CreateUser ユーザー作成
+	// CreateUser - Create a user
 	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error)
-	// ListUsers ユーザー一覧取得
+	// ListUsers - Get user list
 	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
 }
 
@@ -113,11 +113,11 @@ func (c *userServiceClient) ListUsers(ctx context.Context, req *connect.Request[
 
 // UserServiceHandler is an implementation of the user.v1.UserService service.
 type UserServiceHandler interface {
-	// GetUser ユーザー情報取得
+	// GetUser - Get user information
 	GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error)
-	// CreateUser ユーザー作成
+	// CreateUser - Create a user
 	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error)
-	// ListUsers ユーザー一覧取得
+	// ListUsers - Get user list
 	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
 }
 

@@ -46,9 +46,9 @@ const (
 
 // GreetServiceClient is a client for the greet.v1.GreetService service.
 type GreetServiceClient interface {
-	// 挨拶RPC
+	// Greet RPC
 	Greet(context.Context, *connect.Request[GreetRequest]) (*connect.Response[GreetResponse], error)
-	// ピンRPC
+	// Ping RPC
 	Ping(context.Context, *connect.Request[PingRequest]) (*connect.Response[PingResponse], error)
 }
 
@@ -96,9 +96,9 @@ func (c *greetServiceClient) Ping(ctx context.Context, req *connect.Request[Ping
 
 // GreetServiceHandler is an implementation of the greet.v1.GreetService service.
 type GreetServiceHandler interface {
-	// 挨拶RPC
+	// Greet RPC
 	Greet(context.Context, *connect.Request[GreetRequest]) (*connect.Response[GreetResponse], error)
-	// ピンRPC
+	// Ping RPC
 	Ping(context.Context, *connect.Request[PingRequest]) (*connect.Response[PingResponse], error)
 }
 

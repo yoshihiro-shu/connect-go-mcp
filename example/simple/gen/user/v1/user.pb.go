@@ -28,12 +28,12 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// ユーザー情報取得リクエスト
-// パラメータ user_id: ユーザーID（必須）
-// 戻り値: ユーザー名、メールアドレス、作成日時
+// Request to get user information
+// Parameter user_id: User ID (required)
+// Return value: User name, email address, creation timestamp
 type GetUserRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"` // ユーザーID
+	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"` // User ID
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -77,7 +77,7 @@ func (x *GetUserRequest) GetUserId() string {
 
 type GetUserResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	User          *User                  `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"` // ユーザー情報
+	User          *User                  `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"` // User information
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -119,13 +119,13 @@ func (x *GetUserResponse) GetUser() *User {
 	return nil
 }
 
-// ユーザー作成リクエスト
-// パラメータ name: ユーザー名（必須）、email: メールアドレス（必須）
-// 戻り値: 作成されたユーザー情報
+// Request to create a user
+// Parameters name: User name (required), email: Email address (required)
+// Return value: Created user information
 type CreateUserRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`   // ユーザー名
-	Email         string                 `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"` // メールアドレス
+	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`   // User name
+	Email         string                 `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"` // Email address
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -176,7 +176,7 @@ func (x *CreateUserRequest) GetEmail() string {
 
 type CreateUserResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	User          *User                  `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"` // 作成されたユーザー情報
+	User          *User                  `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"` // Created user information
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -218,13 +218,13 @@ func (x *CreateUserResponse) GetUser() *User {
 	return nil
 }
 
-// ユーザー一覧取得リクエスト
-// パラメータ limit: 取得件数（オプション）、offset: オフセット（オプション）
-// 戻り値: ユーザー一覧
+// Request to get user list
+// Parameters limit: Number of records to retrieve (optional), offset: Offset (optional)
+// Return value: User list
 type ListUsersRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Limit         int32                  `protobuf:"varint,1,opt,name=limit,proto3" json:"limit,omitempty"`   // 取得件数
-	Offset        int32                  `protobuf:"varint,2,opt,name=offset,proto3" json:"offset,omitempty"` // オフセット
+	Limit         int32                  `protobuf:"varint,1,opt,name=limit,proto3" json:"limit,omitempty"`   // Number of records to retrieve
+	Offset        int32                  `protobuf:"varint,2,opt,name=offset,proto3" json:"offset,omitempty"` // Offset
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -275,8 +275,8 @@ func (x *ListUsersRequest) GetOffset() int32 {
 
 type ListUsersResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Users         []*User                `protobuf:"bytes,1,rep,name=users,proto3" json:"users,omitempty"`  // ユーザー一覧
-	Total         int32                  `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"` // 総件数
+	Users         []*User                `protobuf:"bytes,1,rep,name=users,proto3" json:"users,omitempty"`  // User list
+	Total         int32                  `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"` // Total count
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -325,13 +325,13 @@ func (x *ListUsersResponse) GetTotal() int32 {
 	return 0
 }
 
-// ユーザー情報
+// User information
 type User struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`                                // ユーザーID
-	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`                            // ユーザー名
-	Email         string                 `protobuf:"bytes,3,opt,name=email,proto3" json:"email,omitempty"`                          // メールアドレス
-	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"` // 作成日時
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`                                // User ID
+	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`                            // User name
+	Email         string                 `protobuf:"bytes,3,opt,name=email,proto3" json:"email,omitempty"`                          // Email address
+	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"` // Creation timestamp
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }

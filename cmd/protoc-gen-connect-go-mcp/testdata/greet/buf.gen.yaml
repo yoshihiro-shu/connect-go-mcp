@@ -6,7 +6,6 @@ plugins:
   - local: protoc-gen-connect-go
     out: gen
     opt: paths=source_relative
-  # - local: ["../../protoc-gen-connect-go-mcp"]
   - local: protoc-gen-connect-go-mcp
     out: gen
     opt: paths=source_relative

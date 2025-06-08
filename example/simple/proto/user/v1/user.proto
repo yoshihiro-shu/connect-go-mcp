@@ -12,58 +12,58 @@ option go_package = "github.com/yoshihiro-shu/connect-go-mcp/example/simple/gen/
 
 import "google/protobuf/timestamp.proto";
 
-// ユーザー情報取得リクエスト
-// パラメータ user_id: ユーザーID（必須）
-// 戻り値: ユーザー名、メールアドレス、作成日時
+// Request to get user information
+// Parameter user_id: User ID (required)
+// Return value: User name, email address, creation timestamp
 message GetUserRequest {
-  string user_id = 1; // ユーザーID
+  string user_id = 1; // User ID
 }
 
 message GetUserResponse {
-  User user = 1; // ユーザー情報
+  User user = 1; // User information
 }
 
-// ユーザー作成リクエスト
-// パラメータ name: ユーザー名（必須）、email: メールアドレス（必須）
-// 戻り値: 作成されたユーザー情報
+// Request to create a user
+// Parameters name: User name (required), email: Email address (required)
+// Return value: Created user information
 message CreateUserRequest {
-  string name = 1;  // ユーザー名
-  string email = 2; // メールアドレス
+  string name = 1;  // User name
+  string email = 2; // Email address
 }
 
 message CreateUserResponse {
-  User user = 1; // 作成されたユーザー情報
+  User user = 1; // Created user information
 }
 
-// ユーザー一覧取得リクエスト
-// パラメータ limit: 取得件数（オプション）、offset: オフセット（オプション）
-// 戻り値: ユーザー一覧
+// Request to get user list
+// Parameters limit: Number of records to retrieve (optional), offset: Offset (optional)
+// Return value: User list
 message ListUsersRequest {
-  int32 limit = 1;  // 取得件数
-  int32 offset = 2; // オフセット
+  int32 limit = 1;  // Number of records to retrieve
+  int32 offset = 2; // Offset
 }
 
 message ListUsersResponse {
-  repeated User users = 1; // ユーザー一覧
-  int32 total = 2;         // 総件数
+  repeated User users = 1; // User list
+  int32 total = 2;         // Total count
 }
 
-// ユーザー情報
+// User information
 message User {
-  string id = 1;                              // ユーザーID
-  string name = 2;                            // ユーザー名
-  string email = 3;                           // メールアドレス
-  google.protobuf.Timestamp created_at = 4;   // 作成日時
+  string id = 1;                              // User ID
+  string name = 2;                            // User name
+  string email = 3;                           // Email address
+  google.protobuf.Timestamp created_at = 4;   // Creation timestamp
 }
 
-// ユーザー管理サービス
+// User management service
 service UserService {
-  // GetUser ユーザー情報取得
+  // GetUser - Get user information
   rpc GetUser(GetUserRequest) returns (GetUserResponse) {}
-  
-  // CreateUser ユーザー作成
+
+  // CreateUser - Create a user
   rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {}
-  
-  // ListUsers ユーザー一覧取得
+
+  // ListUsers - Get user list
   rpc ListUsers(ListUsersRequest) returns (ListUsersResponse) {}
-} 
+}

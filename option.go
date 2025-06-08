@@ -24,10 +24,12 @@ func (o *httpClientOption) apply(c *toolConfig) {
 	}
 }
 
+// WithHTTPClient is a client option that sets the HTTP client to use for the tool handler.
 func WithHTTPClient(client *http.Client) ClientOption {
 	return &httpClientOption{client: client}
 }
 
+// WithHTTPHeaders is a client option that sets the HTTP headers to use for the tool handler.
 func WithHTTPHeaders(headers map[string]string) ClientOption {
 	return &httpClientOption{headers: headers}
 }
