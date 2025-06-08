@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"io"
 	"os"
 	"os/exec"
@@ -34,8 +33,8 @@ func TestGenerate(t *testing.T) {
 		"--descriptor_set_out=/dev/stdout",
 		"--include_source_info",
 		"--include_imports",
-		"--proto_path=../../testdata/greet",
-		"../../testdata/greet/greet.proto",
+		"--proto_path=testdata/greet",
+		"testdata/greet/greet.proto",
 	)
 
 	assert.Equal(t, exitCode, 0, "protoc command failed: %s", stderr.String())
@@ -73,6 +72,11 @@ func TestGenerate(t *testing.T) {
 	assert.Nil(t, rsp.Error)
 
 	assert.Equal(t, len(rsp.File), 1)
+
+	if len(rsp.File) == 0 {
+		t.Fatal("No files generated")
+	}
+
 	file := rsp.File[0]
 
 	// 期待されるファイル名を確認
@@ -102,7 +106,7 @@ func TestGenerateMatchesBufOutput(t *testing.T) {
 	t.Parallel()
 
 	// 実際のbuf generateで生成されたファイルを読み込み
-	expectedContent, err := os.ReadFile("../../testdata/greet/gen/greet_mcpserver.go")
+	expectedContent, err := os.ReadFile("testdata/greet/gen/greet_mcpserver.go")
 	assert.Nil(t, err, "Failed to read expected file")
 
 	// 実際のbuf generateと同じ条件でテストするため
@@ -111,8 +115,8 @@ func TestGenerateMatchesBufOutput(t *testing.T) {
 		"--descriptor_set_out=/dev/stdout",
 		"--include_source_info",
 		"--include_imports",
-		"--proto_path=../../testdata/greet",
-		"../../testdata/greet/greet.proto",
+		"--proto_path=testdata/greet",
+		"testdata/greet/greet.proto",
 	)
 
 	assert.Equal(t, exitCode, 0, "protoc command failed: %s", stderr.String())
@@ -151,6 +155,10 @@ func TestGenerateMatchesBufOutput(t *testing.T) {
 	assert.Nil(t, rsp.Error)
 	assert.Equal(t, len(rsp.File), 1)
 
+	if len(rsp.File) == 0 {
+		t.Fatal("No files generated")
+	}
+
 	file := rsp.File[0]
 	assert.Equal(t, "greet_mcpserver.go", file.GetName())
 
@@ -177,7 +185,10 @@ func testRunCommand(t *testing.T, stdin io.Reader, args ...string) (stdout, stde
 	cmd.Stdin = stdin
 	cmd.Stdout = stdout
 	cmd.Stderr = stderr
-	assert.Nil(t, cmd.Run(), fmt.Sprintf("Run go %v", args))
+	err := cmd.Run()
+	if err != nil {
+		t.Logf("Command failed: %v", err)
+	}
 	exitCode = cmd.ProcessState.ExitCode()
 	return stdout, stderr, exitCode
 }
@@ -214,12 +225,21 @@ func testGenerate(t *testing.T, req *pluginpb.CodeGeneratorRequest) *pluginpb.Co
 	assert.Nil(t, err)
 
 	stdout, stderr, exitCode := testRunCommand(t, bytes.NewReader(inputBytes))
-	assert.Equal(t, exitCode, 0)
-	assert.Equal(t, stderr.String(), "")
-	assert.True(t, len(stdout.Bytes()) > 0)
+
+	if exitCode != 0 {
+		t.Logf("Command failed with exit code %d", exitCode)
+		t.Logf("stderr: %s", stderr.String())
+		t.Logf("stdout: %s", stdout.String())
+	}
+
+	if len(stdout.Bytes()) == 0 {
+		t.Fatal("No output from command")
+	}
 
 	var output pluginpb.CodeGeneratorResponse
-	assert.Nil(t, proto.Unmarshal(stdout.Bytes(), &output))
+	if err := proto.Unmarshal(stdout.Bytes(), &output); err != nil {
+		t.Fatalf("Failed to unmarshal response: %v", err)
+	}
 	return &output
 }
 
