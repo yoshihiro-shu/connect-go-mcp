@@ -79,8 +79,8 @@ func TestGenerate(t *testing.T) {
 
 	file := rsp.File[0]
 
-	// 期待されるファイル名を確認
-	expectedFileName := "greet_mcpserver.go"
+	// 期待されるファイル名を確認（mcpディレクトリ内に配置される）
+	expectedFileName := "greetv1mcp/greet.mcpserver.go"
 	assert.Equal(t, expectedFileName, file.GetName())
 
 	// 生成されたコンテンツを検証
@@ -97,16 +97,13 @@ func TestGenerate(t *testing.T) {
 	assert.Contains(t, content, `mcp.WithDescription("ピンリクエスト"),`)
 	assert.Contains(t, content, `mcp.WithString("name")`)
 	assert.Contains(t, content, `mcp.WithString("message")`)
-
-	t.Logf("Generated file name: %s", file.GetName())
-	t.Logf("Generated content length: %d", len(content))
 }
 
 func TestGenerateMatchesBufOutput(t *testing.T) {
 	t.Parallel()
 
 	// 実際のbuf generateで生成されたファイルを読み込み
-	expectedContent, err := os.ReadFile("testdata/greet/gen/greet_mcpserver.go")
+	expectedContent, err := os.ReadFile("testdata/greet/gen/greetv1mcp/greet.mcpserver.go")
 	assert.Nil(t, err, "Failed to read expected file")
 
 	// 実際のbuf generateと同じ条件でテストするため
@@ -160,14 +157,148 @@ func TestGenerateMatchesBufOutput(t *testing.T) {
 	}
 
 	file := rsp.File[0]
-	assert.Equal(t, "greet_mcpserver.go", file.GetName())
+	assert.Equal(t, "greetv1mcp/greet.mcpserver.go", file.GetName())
 
 	// 生成された内容と期待される内容が完全に一致することを確認
 	generatedContent := file.GetContent()
 	assert.Equal(t, string(expectedContent), generatedContent,
 		"Generated content should match buf generate output")
+}
 
-	t.Logf("✅ Generated content matches buf generate output")
+func TestGenerateWithPackageSuffix(t *testing.T) {
+	t.Parallel()
+
+	// 実際のbuf generateと同じ条件でテストするため
+	// protocコマンドを直接使用してファイル記述子を取得
+	stdout, stderr, exitCode := testRunProtocCommand(t,
+		"--descriptor_set_out=/dev/stdout",
+		"--include_source_info",
+		"--include_imports",
+		"--proto_path=testdata/greet",
+		"testdata/greet/greet.proto",
+	)
+
+	assert.Equal(t, exitCode, 0, "protoc command failed: %s", stderr.String())
+
+	var fileDescriptorSet descriptorpb.FileDescriptorSet
+	err := proto.Unmarshal(stdout.Bytes(), &fileDescriptorSet)
+	assert.Nil(t, err)
+
+	// greet.protoファイルを見つける
+	var greetFileDesc *descriptorpb.FileDescriptorProto
+	for _, file := range fileDescriptorSet.File {
+		if file.GetName() == "greet.proto" {
+			greetFileDesc = file
+			break
+		}
+	}
+	assert.NotNil(t, greetFileDesc, "greet.proto not found in descriptor set")
+
+	compilerVersion := &pluginpb.Version{
+		Major:  ptr(int32(0)),
+		Minor:  ptr(int32(0)),
+		Patch:  ptr(int32(1)),
+		Suffix: ptr("test"),
+	}
+
+	// package_suffixパラメータを設定
+	req := &pluginpb.CodeGeneratorRequest{
+		FileToGenerate:        []string{greetFileDesc.GetName()},
+		Parameter:             ptr("paths=source_relative,package_suffix=mcp"),
+		ProtoFile:             fileDescriptorSet.File,
+		SourceFileDescriptors: fileDescriptorSet.File,
+		CompilerVersion:       compilerVersion,
+	}
+	rsp := testGenerate(t, req)
+	assert.Nil(t, rsp.Error)
+
+	assert.Equal(t, len(rsp.File), 1)
+
+	if len(rsp.File) == 0 {
+		t.Fatal("No files generated")
+	}
+
+	file := rsp.File[0]
+
+	// 期待されるファイル名を確認（mcpディレクトリ内に配置される）
+	expectedFileName := "greetv1mcp/greet.mcpserver.go"
+	assert.Equal(t, expectedFileName, file.GetName())
+
+	// 生成されたコンテンツを検証
+	content := file.GetContent()
+	assert.NotZero(t, content)
+
+	// package_suffixが適用されていることを確認
+	assert.Contains(t, content, `package greetv1mcp`)
+	assert.Contains(t, content, `func NewGreetServiceMCPServer`)
+}
+
+func TestGenerateWithEmptyPackageSuffix(t *testing.T) {
+	t.Parallel()
+
+	// 実際のbuf generateと同じ条件でテストするため
+	// protocコマンドを直接使用してファイル記述子を取得
+	stdout, stderr, exitCode := testRunProtocCommand(t,
+		"--descriptor_set_out=/dev/stdout",
+		"--include_source_info",
+		"--include_imports",
+		"--proto_path=testdata/greet",
+		"testdata/greet/greet.proto",
+	)
+
+	assert.Equal(t, exitCode, 0, "protoc command failed: %s", stderr.String())
+
+	var fileDescriptorSet descriptorpb.FileDescriptorSet
+	err := proto.Unmarshal(stdout.Bytes(), &fileDescriptorSet)
+	assert.Nil(t, err)
+
+	// greet.protoファイルを見つける
+	var greetFileDesc *descriptorpb.FileDescriptorProto
+	for _, file := range fileDescriptorSet.File {
+		if file.GetName() == "greet.proto" {
+			greetFileDesc = file
+			break
+		}
+	}
+	assert.NotNil(t, greetFileDesc, "greet.proto not found in descriptor set")
+
+	compilerVersion := &pluginpb.Version{
+		Major:  ptr(int32(0)),
+		Minor:  ptr(int32(0)),
+		Patch:  ptr(int32(1)),
+		Suffix: ptr("test"),
+	}
+
+	// package_suffix=（空文字列）パラメータを設定
+	req := &pluginpb.CodeGeneratorRequest{
+		FileToGenerate:        []string{greetFileDesc.GetName()},
+		Parameter:             ptr("paths=source_relative,package_suffix="),
+		ProtoFile:             fileDescriptorSet.File,
+		SourceFileDescriptors: fileDescriptorSet.File,
+		CompilerVersion:       compilerVersion,
+	}
+	rsp := testGenerate(t, req)
+	assert.Nil(t, rsp.Error)
+
+	assert.Equal(t, len(rsp.File), 1)
+
+	if len(rsp.File) == 0 {
+		t.Fatal("No files generated")
+	}
+
+	file := rsp.File[0]
+
+	// 期待されるファイル名を確認（現在のディレクトリに直接配置）
+	expectedFileName := "greet.mcpserver.go"
+	assert.Equal(t, expectedFileName, file.GetName())
+
+	// 生成されたコンテンツを検証
+	content := file.GetContent()
+	assert.NotZero(t, content)
+
+	// 元のパッケージ名が使われていることを確認
+	assert.Contains(t, content, `package greetv1`)
+	assert.Contains(t, content, `func NewGreetServiceMCPServer`)
 }
 
 // testRunCommand executes the main.go with the given arguments and optional stdin input.

@@ -33,7 +33,8 @@ func TestGenerate(t *testing.T) {
 	gen, err := protogen.Options{}.New(req)
 	assert.Nil(t, err)
 
-	err = Generate(gen)
+	config := Config{} // デフォルト設定
+	err = Generate(gen, config)
 	assert.Nil(t, err)
 }
 
