@@ -15,8 +15,9 @@ type ToolHandler struct {
 }
 
 type toolConfig struct {
-	baseURL    string
-	httpClient *http.Client
+	baseURL     string
+	httpClient  *http.Client
+	httpHeaders http.Header
 }
 
 func NewToolConfig(baseURL string) *toolConfig {
@@ -34,7 +35,7 @@ func NewToolHandler(baseURL string, opts ...ClientOption) *ToolHandler {
 	return &ToolHandler{config: config}
 }
 
-func (h *ToolHandler) Handle(ctx context.Context, req mcp.CallToolRequest, endpoint string) (*mcp.CallToolResult, error) {
+func (h *ToolHandler) httpRequest(ctx context.Context, req mcp.CallToolRequest, endpoint string) (*mcp.CallToolResult, error) {
 	arguments := req.Params.Arguments
 
 	reqj, err := json.Marshal(arguments)
@@ -49,6 +50,12 @@ func (h *ToolHandler) Handle(ctx context.Context, req mcp.CallToolRequest, endpo
 	}
 
 	hreq.Header.Set("Content-Type", "application/json")
+
+	for k, v := range h.config.httpHeaders {
+		for _, vv := range v {
+			hreq.Header.Add(k, vv)
+		}
+	}
 
 	resp, err := h.config.httpClient.Do(hreq)
 	if err != nil {
@@ -66,4 +73,8 @@ func (h *ToolHandler) Handle(ctx context.Context, req mcp.CallToolRequest, endpo
 	}
 
 	return &result, nil
+}
+
+func (h *ToolHandler) Handle(ctx context.Context, req mcp.CallToolRequest, endpoint string) (*mcp.CallToolResult, error) {
+	return h.httpRequest(ctx, req, endpoint)
 }
