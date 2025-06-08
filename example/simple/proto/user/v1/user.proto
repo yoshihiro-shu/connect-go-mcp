@@ -1,0 +1,69 @@
+/**
+ * User service definition for the simple example.
+ * 
+ * This demonstrates how to define gRPC services that will be converted
+ * to MCP server tools using connect-go-mcp.
+ */
+syntax = "proto3";
+
+package user.v1;
+
+option go_package = "github.com/yoshihiro-shu/connect-go-mcp/example/simple/gen/user/v1;userv1";
+
+import "google/protobuf/timestamp.proto";
+
+// ユーザー情報取得リクエスト
+// パラメータ user_id: ユーザーID（必須）
+// 戻り値: ユーザー名、メールアドレス、作成日時
+message GetUserRequest {
+  string user_id = 1; // ユーザーID
+}
+
+message GetUserResponse {
+  User user = 1; // ユーザー情報
+}
+
+// ユーザー作成リクエスト
+// パラメータ name: ユーザー名（必須）、email: メールアドレス（必須）
+// 戻り値: 作成されたユーザー情報
+message CreateUserRequest {
+  string name = 1;  // ユーザー名
+  string email = 2; // メールアドレス
+}
+
+message CreateUserResponse {
+  User user = 1; // 作成されたユーザー情報
+}
+
+// ユーザー一覧取得リクエスト
+// パラメータ limit: 取得件数（オプション）、offset: オフセット（オプション）
+// 戻り値: ユーザー一覧
+message ListUsersRequest {
+  int32 limit = 1;  // 取得件数
+  int32 offset = 2; // オフセット
+}
+
+message ListUsersResponse {
+  repeated User users = 1; // ユーザー一覧
+  int32 total = 2;         // 総件数
+}
+
+// ユーザー情報
+message User {
+  string id = 1;                              // ユーザーID
+  string name = 2;                            // ユーザー名
+  string email = 3;                           // メールアドレス
+  google.protobuf.Timestamp created_at = 4;   // 作成日時
+}
+
+// ユーザー管理サービス
+service UserService {
+  // GetUser ユーザー情報取得
+  rpc GetUser(GetUserRequest) returns (GetUserResponse) {}
+  
+  // CreateUser ユーザー作成
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {}
+  
+  // ListUsers ユーザー一覧取得
+  rpc ListUsers(ListUsersRequest) returns (ListUsersResponse) {}
+} 
