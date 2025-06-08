@@ -40,20 +40,25 @@ jobs:
         run: |
           cd ./cmd/protoc-gen-connect-go-mcp
           go build -o protoc-gen-connect-go-mcp .
+          chmod +x protoc-gen-connect-go-mcp
 
-      - name: Generate proto files for testdata
+      - name: Generate proto files for testdata/greet
         run: |
-          export PATH=$PATH:$(pwd)/cmd/protoc-gen-connect-go-mcp
           cd ./cmd/protoc-gen-connect-go-mcp/testdata/greet
           buf generate
-          cd ../package-suffix
-          buf generate
+          ls -la gen/
 
-      - name: Generate proto files for example
+      - name: Generate proto files for testdata/package-suffix
         run: |
-          export PATH=$PATH:$(pwd)/cmd/protoc-gen-connect-go-mcp
+          cd ./cmd/protoc-gen-connect-go-mcp/testdata/package-suffix
+          buf generate
+          ls -la gen/
+
+      - name: Generate proto files for example/simple
+        run: |
           cd ./example/simple
           buf generate
+          ls -la gen/
 
       - name: Test
         env:

@@ -9,14 +9,14 @@ import (
 	connectgomcp "github.com/yoshihiro-shu/connect-go-mcp"
 )
 
-// NewMCPServerWithTools は設定済みの UserService MCP サーバーを生成して返します
+// NewMCPServerWithTools creates and returns a configured UserService MCP server
 func NewUserServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) *server.MCPServer {
 	server := server.NewMCPServer("UserService", "1.0.0")
 
 	toolHandler := connectgomcp.NewToolHandler(baseURL, opts...)
 	server.AddTool(
-		mcp.NewTool("GetUser ユーザー情報取得",
-			mcp.WithDescription("ユーザー情報取得リクエスト パラメータ user_id: ユーザーID（必須） 戻り値: ユーザー名、メールアドレス、作成日時"),
+		mcp.NewTool("GetUser - Get user information",
+			mcp.WithDescription("Request to get user information Parameter user_id: User ID (required) Return value: User name, email address, creation timestamp"),
 			mcp.WithString("user_id"),
 		),
 		func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
@@ -25,8 +25,8 @@ func NewUserServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) 
 	)
 
 	server.AddTool(
-		mcp.NewTool("CreateUser ユーザー作成",
-			mcp.WithDescription("ユーザー作成リクエスト パラメータ name: ユーザー名（必須）、email: メールアドレス（必須） 戻り値: 作成されたユーザー情報"),
+		mcp.NewTool("CreateUser - Create a user",
+			mcp.WithDescription("Request to create a user Parameters name: User name (required), email: Email address (required) Return value: Created user information"),
 			mcp.WithString("name"),
 			mcp.WithString("email"),
 		),
@@ -36,8 +36,8 @@ func NewUserServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) 
 	)
 
 	server.AddTool(
-		mcp.NewTool("ListUsers ユーザー一覧取得",
-			mcp.WithDescription("ユーザー一覧取得リクエスト パラメータ limit: 取得件数（オプション）、offset: オフセット（オプション） 戻り値: ユーザー一覧"),
+		mcp.NewTool("ListUsers - Get user list",
+			mcp.WithDescription("Request to get user list Parameters limit: Number of records to retrieve (optional), offset: Offset (optional) Return value: User list"),
 			mcp.WithNumber("limit"),
 			mcp.WithNumber("offset"),
 		),
