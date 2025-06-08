@@ -10,28 +10,28 @@ package greet.v1;
 
 option go_package = "github.com/yoshihiro-shu/connect-go-mcp/internal/gen/greet/v1;greetv1";
 
-// 挨拶リクエスト
+// Greeting request
 message GreetRequest {
-  string name = 1; // 名前
+  string name = 1; // Name
 }
 
 message GreetResponse {
-  string greeting = 1; // 挨拶
+  string greeting = 1; // Greeting
 }
 
-// ピンリクエスト
+// Ping request
 message PingRequest {
-  string message = 1; // メッセージ
+  string message = 1; // Message
 }
 
 message PingResponse {
-  string message = 1; // メッセージ
+  string message = 1; // Message
 }
 
-// 挨拶サービス
+// Greeting service
 service GreetService {
-  // 挨拶RPC
+  // Greet RPC
   rpc Greet(GreetRequest) returns (GreetResponse) {}
-  // ピンRPC
+  // Ping RPC
   rpc Ping(PingRequest) returns (PingResponse) {}
 }
