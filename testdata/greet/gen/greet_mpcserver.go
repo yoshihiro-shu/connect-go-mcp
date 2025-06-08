@@ -16,7 +16,7 @@ func NewGreetServiceMCPServer(baseURL string, opts ...connectgompc.ClientOption)
 
 	toolHandler := connectgompc.NewToolHandler(baseURL, opts...)
 	server.AddTool(
-		mcp.NewTool("挨拶",
+		mcp.NewTool("挨拶RPC",
 			mcp.WithDescription("挨拶リクエスト"),
 			mcp.WithString("name"),
 		),
@@ -26,7 +26,7 @@ func NewGreetServiceMCPServer(baseURL string, opts ...connectgompc.ClientOption)
 	)
 
 	server.AddTool(
-		mcp.NewTool("ピン",
+		mcp.NewTool("ピンRPC",
 			mcp.WithDescription("ピンリクエスト"),
 			mcp.WithString("message"),
 		),

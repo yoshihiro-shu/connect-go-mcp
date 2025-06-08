@@ -30,8 +30,8 @@ message PingResponse {
 
 // 挨拶サービス
 service GreetService {
-  // 挨拶
+  // 挨拶RPC
   rpc Greet(GreetRequest) returns (GreetResponse) {}
-  // ピン
+  // ピンRPC
   rpc Ping(PingRequest) returns (PingResponse) {}
 }
