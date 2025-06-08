@@ -10,7 +10,7 @@ A Protocol Buffers compiler plugin that generates MCP (Model Context Protocol) s
 
 - **Automatic MCP Server Generation**: Converts gRPC services to MCP server implementations
 - **Flexible Package Organization**: Supports custom package suffixes for better code organization
-- **Japanese Comment Support**: Preserves Japanese comments from proto files as tool descriptions
+- **Comment Preservation**: Preserves comments from proto files as tool descriptions
 - **Connect-Go Compatible**: Works alongside `protoc-gen-connect-go` for full gRPC support
 
 ## Installation
@@ -115,15 +115,15 @@ option go_package = "github.com/example/gen/greet/v1;greetv1";
 
 // Greeting service for MCP demonstration
 service GreetService {
-  // 挨拶RPC
+  // Greet RPC
   rpc Greet(GreetRequest) returns (GreetResponse);
 
-  // ピンRPC
+  // Ping RPC
   rpc Ping(PingRequest) returns (PingResponse);
 }
 
 message GreetRequest {
-  // 挨拶リクエスト
+  // Greeting request
   string name = 1;
 }
 
@@ -132,7 +132,7 @@ message GreetResponse {
 }
 
 message PingRequest {
-  // ピンリクエスト
+  // Ping request
   string message = 1;
 }
 
@@ -162,8 +162,8 @@ func NewGreetServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption)
     toolHandler := connectgomcp.NewToolHandler(baseURL, opts...)
 
     server.AddTool(
-        mcp.NewTool("挨拶RPC",
-            mcp.WithDescription("挨拶リクエスト"),
+        mcp.NewTool("Greet RPC",
+            mcp.WithDescription("Greeting request"),
             mcp.WithString("name"),
         ),
         func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
@@ -172,8 +172,8 @@ func NewGreetServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption)
     )
 
     server.AddTool(
-        mcp.NewTool("ピンRPC",
-            mcp.WithDescription("ピンリクエスト"),
+        mcp.NewTool("Ping RPC",
+            mcp.WithDescription("Ping request"),
             mcp.WithString("message"),
         ),
         func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
@@ -214,7 +214,7 @@ The plugin generates:
 1. **MCP Server Constructor**: `New{ServiceName}MCPServer()` function
 2. **Tool Definitions**: Each RPC method becomes an MCP tool
 3. **Parameter Mapping**: Proto message fields become tool parameters
-4. **Japanese Comments**: Preserved as tool descriptions
+4. **Comments**: Preserved as tool descriptions
 5. **Type Safety**: Full Go type safety for all operations
 
 ## Integration with MCP Ecosystem
