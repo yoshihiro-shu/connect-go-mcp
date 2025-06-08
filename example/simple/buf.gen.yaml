@@ -1,0 +1,16 @@
+version: v2
+plugins:
+  # Protocol Buffers Go generator
+  - local: protoc-gen-go
+    out: gen
+    opt: paths=source_relative
+
+  # Connect-Go generator for gRPC clients/servers
+  - local: protoc-gen-connect-go
+    out: gen
+    opt: paths=source_relative
+
+  # connect-go-mcp generator for MCP server tools
+  - local: protoc-gen-connect-go-mcp
+    out: gen
+    opt: paths=source_relative
