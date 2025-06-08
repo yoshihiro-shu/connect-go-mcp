@@ -5,6 +5,7 @@ go 1.23
 toolchain go1.24.0
 
 require (
+	connectrpc.com/connect v1.18.1
 	github.com/mark3labs/mcp-go v0.22.0
 	github.com/stretchr/testify v1.10.0
 	google.golang.org/protobuf v1.36.6

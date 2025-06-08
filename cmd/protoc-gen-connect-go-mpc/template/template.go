@@ -32,7 +32,6 @@ func GenerateCode(g *protogen.GeneratedFile, pkgName string, services []parser.S
 func generateImports(g *protogen.GeneratedFile, services []parser.Service) {
 	g.P("import (")
 	g.P(`	"context"`)
-	g.P(`	"fmt"`)
 	g.P()
 	g.P(`	"github.com/mark3labs/mcp-go/mcp"`)
 	g.P(`	"github.com/mark3labs/mcp-go/server"`)
