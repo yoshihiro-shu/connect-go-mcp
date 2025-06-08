@@ -15,13 +15,45 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
-          go-version: "1.24.0"
+          go-version: 1.24.x
 
       - name: Install Protocol Buffers
         run: |
           sudo apt-get update
           sudo apt-get install -y protobuf-compiler
           protoc --version
+
+      - name: Install buf
+        run: |
+          BUF_VERSION=1.28.1
+          curl -sSL "https://github.com/bufbuild/buf/releases/download/v${BUF_VERSION}/buf-$(uname -s)-$(uname -m)" -o buf
+          sudo install buf /usr/local/bin/
+          rm buf
+          buf --version
+
+      - name: Install required protoc plugins
+        run: |
+          go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+          go install connectrpc.com/connect/cmd/protoc-gen-connect-go@latest
+
+      - name: Build protoc-gen-connect-go-mcp plugin
+        run: |
+          cd ./cmd/protoc-gen-connect-go-mcp
+          go build -o protoc-gen-connect-go-mcp .
+
+      - name: Generate proto files for testdata
+        run: |
+          export PATH=$PATH:$(pwd)/cmd/protoc-gen-connect-go-mcp
+          cd ./cmd/protoc-gen-connect-go-mcp/testdata/greet
+          buf generate
+          cd ../package-suffix
+          buf generate
+
+      - name: Generate proto files for example
+        run: |
+          export PATH=$PATH:$(pwd)/cmd/protoc-gen-connect-go-mcp
+          cd ./example/simple
+          buf generate
 
       - name: Test
         env:
