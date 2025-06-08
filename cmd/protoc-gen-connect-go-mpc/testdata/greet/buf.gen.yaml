@@ -8,7 +8,7 @@ plugins:
     opt:
       - paths=source_relative
       - package_suffix
-  - local: protoc-gen-connect-go-mpc
+  - local: protoc-gen-connect-go-mcp
     out: gen
     opt: paths=source_relative
 

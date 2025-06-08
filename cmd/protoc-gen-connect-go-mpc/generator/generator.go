@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"github.com/yoshihiro-shu/connect-go-mpc/cmd/protoc-gen-connect-go-mpc/parser"
-	"github.com/yoshihiro-shu/connect-go-mpc/cmd/protoc-gen-connect-go-mpc/template"
+	"github.com/yoshihiro-shu/connect-go-mcp/cmd/protoc-gen-connect-go-mcp/parser"
+	"github.com/yoshihiro-shu/connect-go-mcp/cmd/protoc-gen-connect-go-mcp/template"
 	"google.golang.org/protobuf/compiler/protogen"
 )
 
@@ -23,7 +23,7 @@ func Generate(gen *protogen.Plugin) error {
 		}
 
 		// 出力ファイル名を決定
-		outputName := f.GeneratedFilenamePrefix + "_mpcserver.go"
+		outputName := f.GeneratedFilenamePrefix + "_mcpserver.go"
 
 		// 出力ファイルを生成
 		g := gen.NewGeneratedFile(outputName, f.GoImportPath)

@@ -1,4 +1,4 @@
-module github.com/yoshihiro-shu/connect-go-mpc
+module github.com/yoshihiro-shu/connect-go-mcp
 
 go 1.23
 

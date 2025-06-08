@@ -1,6 +1,8 @@
-package connect_mpcserver
+package connect_mcpserver
 
-import "net/http"
+import (
+	"net/http"
+)
 
 type ClientOption interface {
 	apply(*toolConfig)

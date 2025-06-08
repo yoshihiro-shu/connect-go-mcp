@@ -3,7 +3,7 @@ package generator
 import (
 	"testing"
 
-	greetv1 "github.com/yoshihiro-shu/connect-go-mpc/cmd/protoc-gen-connect-go-mpc/testdata/greet/gen"
+	greetv1 "github.com/yoshihiro-shu/connect-go-mcp/cmd/protoc-gen-connect-go-mcp/testdata/greet/gen"
 
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/protobuf/compiler/protogen"

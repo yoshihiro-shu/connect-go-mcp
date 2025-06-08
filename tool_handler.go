@@ -1,4 +1,4 @@
-package connect_mpcserver
+package connect_mcpserver
 
 import (
 	"bytes"

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/yoshihiro-shu/connect-go-mpc/cmd/protoc-gen-connect-go-mpc/generator"
+	"github.com/yoshihiro-shu/connect-go-mcp/cmd/protoc-gen-connect-go-mcp/generator"
 	"google.golang.org/protobuf/compiler/protogen"
 )
 

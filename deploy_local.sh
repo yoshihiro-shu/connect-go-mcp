@@ -1,4 +1,4 @@
 #!/bin/bash
 
-go build ./cmd/protoc-gen-connect-go-mpc
-mv ./protoc-gen-connect-go-mpc ~/.local/bin/protoc-gen-connect-go-mpc
+go build ./cmd/protoc-gen-connect-go-mcp
+mv ./protoc-gen-connect-go-mcp ~/.local/bin/protoc-gen-connect-go-mcp
