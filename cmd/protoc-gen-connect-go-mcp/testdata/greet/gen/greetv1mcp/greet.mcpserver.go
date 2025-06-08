@@ -9,14 +9,14 @@ import (
 	connectgomcp "github.com/yoshihiro-shu/connect-go-mcp"
 )
 
-// NewMCPServerWithTools は設定済みの GreetService MCP サーバーを生成して返します
+// NewMCPServerWithTools creates and returns a configured GreetService MCP server
 func NewGreetServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) *server.MCPServer {
 	server := server.NewMCPServer("GreetService", "1.0.0")
 
 	toolHandler := connectgomcp.NewToolHandler(baseURL, opts...)
 	server.AddTool(
-		mcp.NewTool("挨拶RPC",
-			mcp.WithDescription("挨拶リクエスト"),
+		mcp.NewTool("Greet RPC",
+			mcp.WithDescription("Greeting request"),
 			mcp.WithString("name"),
 		),
 		func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
@@ -25,8 +25,8 @@ func NewGreetServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption)
 	)
 
 	server.AddTool(
-		mcp.NewTool("ピンRPC",
-			mcp.WithDescription("ピンリクエスト"),
+		mcp.NewTool("Ping RPC",
+			mcp.WithDescription("Ping request"),
 			mcp.WithString("message"),
 		),
 		func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
