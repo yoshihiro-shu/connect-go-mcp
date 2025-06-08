@@ -80,7 +80,7 @@ func TestGenerate(t *testing.T) {
 	file := rsp.File[0]
 
 	// 期待されるファイル名を確認
-	expectedFileName := "greet_mcpserver.go"
+	expectedFileName := "greet.mcpserver.go"
 	assert.Equal(t, expectedFileName, file.GetName())
 
 	// 生成されたコンテンツを検証
@@ -106,7 +106,7 @@ func TestGenerateMatchesBufOutput(t *testing.T) {
 	t.Parallel()
 
 	// 実際のbuf generateで生成されたファイルを読み込み
-	expectedContent, err := os.ReadFile("testdata/greet/gen/greet_mcpserver.go")
+	expectedContent, err := os.ReadFile("testdata/greet/gen/greet.mcpserver.go")
 	assert.Nil(t, err, "Failed to read expected file")
 
 	// 実際のbuf generateと同じ条件でテストするため
@@ -160,7 +160,7 @@ func TestGenerateMatchesBufOutput(t *testing.T) {
 	}
 
 	file := rsp.File[0]
-	assert.Equal(t, "greet_mcpserver.go", file.GetName())
+	assert.Equal(t, "greet.mcpserver.go", file.GetName())
 
 	// 生成された内容と期待される内容が完全に一致することを確認
 	generatedContent := file.GetContent()
@@ -226,7 +226,7 @@ func TestGenerateWithPackageSuffix(t *testing.T) {
 	file := rsp.File[0]
 
 	// 期待されるファイル名を確認
-	expectedFileName := "greet_mcpserver.go"
+	expectedFileName := "greet.mcpserver.go"
 	assert.Equal(t, expectedFileName, file.GetName())
 
 	// 生成されたコンテンツを検証

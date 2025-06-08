@@ -28,7 +28,7 @@ func Generate(gen *protogen.Plugin, config Config) error {
 		}
 
 		// 出力ファイル名を決定
-		outputName := f.GeneratedFilenamePrefix + "_mcpserver.go"
+		outputName := f.GeneratedFilenamePrefix + ".mcpserver.go"
 
 		// 出力ファイルを生成
 		g := gen.NewGeneratedFile(outputName, f.GoImportPath)
