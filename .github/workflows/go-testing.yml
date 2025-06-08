@@ -40,7 +40,7 @@ jobs:
 
       - name: Install protoc-gen-connect-go-mcp
         run: |
-          sh ./deploy_local.sh
+          go build ./cmd/protoc-gen-connect-go-mcp
 
       - name: Generate proto files
         run: |
