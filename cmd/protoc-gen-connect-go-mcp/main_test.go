@@ -97,9 +97,6 @@ func TestGenerate(t *testing.T) {
 	assert.Contains(t, content, `mcp.WithDescription("ピンリクエスト"),`)
 	assert.Contains(t, content, `mcp.WithString("name")`)
 	assert.Contains(t, content, `mcp.WithString("message")`)
-
-	t.Logf("Generated file name: %s", file.GetName())
-	t.Logf("Generated content length: %d", len(content))
 }
 
 func TestGenerateMatchesBufOutput(t *testing.T) {
@@ -166,8 +163,6 @@ func TestGenerateMatchesBufOutput(t *testing.T) {
 	generatedContent := file.GetContent()
 	assert.Equal(t, string(expectedContent), generatedContent,
 		"Generated content should match buf generate output")
-
-	t.Logf("✅ Generated content matches buf generate output")
 }
 
 func TestGenerateWithPackageSuffix(t *testing.T) {
@@ -236,10 +231,6 @@ func TestGenerateWithPackageSuffix(t *testing.T) {
 	// package_suffixが適用されていることを確認
 	assert.Contains(t, content, `package greetv1mcp`)
 	assert.Contains(t, content, `func NewGreetServiceMCPServer`)
-
-	t.Logf("Generated file name: %s", file.GetName())
-	t.Logf("Generated content with package suffix:")
-	t.Logf("%s", content)
 }
 
 func TestGenerateWithEmptyPackageSuffix(t *testing.T) {
@@ -308,10 +299,6 @@ func TestGenerateWithEmptyPackageSuffix(t *testing.T) {
 	// 元のパッケージ名が使われていることを確認
 	assert.Contains(t, content, `package greetv1`)
 	assert.Contains(t, content, `func NewGreetServiceMCPServer`)
-
-	t.Logf("Generated file name: %s", file.GetName())
-	t.Logf("Generated content with empty package suffix:")
-	t.Logf("%s", content)
 }
 
 // testRunCommand executes the main.go with the given arguments and optional stdin input.
