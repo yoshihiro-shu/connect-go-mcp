@@ -170,6 +170,78 @@ func TestGenerateMatchesBufOutput(t *testing.T) {
 	t.Logf("✅ Generated content matches buf generate output")
 }
 
+func TestGenerateWithPackageSuffix(t *testing.T) {
+	t.Parallel()
+
+	// 実際のbuf generateと同じ条件でテストするため
+	// protocコマンドを直接使用してファイル記述子を取得
+	stdout, stderr, exitCode := testRunProtocCommand(t,
+		"--descriptor_set_out=/dev/stdout",
+		"--include_source_info",
+		"--include_imports",
+		"--proto_path=testdata/greet",
+		"testdata/greet/greet.proto",
+	)
+
+	assert.Equal(t, exitCode, 0, "protoc command failed: %s", stderr.String())
+
+	var fileDescriptorSet descriptorpb.FileDescriptorSet
+	err := proto.Unmarshal(stdout.Bytes(), &fileDescriptorSet)
+	assert.Nil(t, err)
+
+	// greet.protoファイルを見つける
+	var greetFileDesc *descriptorpb.FileDescriptorProto
+	for _, file := range fileDescriptorSet.File {
+		if file.GetName() == "greet.proto" {
+			greetFileDesc = file
+			break
+		}
+	}
+	assert.NotNil(t, greetFileDesc, "greet.proto not found in descriptor set")
+
+	compilerVersion := &pluginpb.Version{
+		Major:  ptr(int32(0)),
+		Minor:  ptr(int32(0)),
+		Patch:  ptr(int32(1)),
+		Suffix: ptr("test"),
+	}
+
+	// package_suffixパラメータを設定
+	req := &pluginpb.CodeGeneratorRequest{
+		FileToGenerate:        []string{greetFileDesc.GetName()},
+		Parameter:             ptr("paths=source_relative,package_suffix=mcp"),
+		ProtoFile:             fileDescriptorSet.File,
+		SourceFileDescriptors: fileDescriptorSet.File,
+		CompilerVersion:       compilerVersion,
+	}
+	rsp := testGenerate(t, req)
+	assert.Nil(t, rsp.Error)
+
+	assert.Equal(t, len(rsp.File), 1)
+
+	if len(rsp.File) == 0 {
+		t.Fatal("No files generated")
+	}
+
+	file := rsp.File[0]
+
+	// 期待されるファイル名を確認
+	expectedFileName := "greet_mcpserver.go"
+	assert.Equal(t, expectedFileName, file.GetName())
+
+	// 生成されたコンテンツを検証
+	content := file.GetContent()
+	assert.NotZero(t, content)
+
+	// package_suffixが適用されていることを確認
+	assert.Contains(t, content, `package greetv1mcp`)
+	assert.Contains(t, content, `func NewGreetServiceMCPServer`)
+
+	t.Logf("Generated file name: %s", file.GetName())
+	t.Logf("Generated content with package suffix:")
+	t.Logf("%s", content)
+}
+
 // testRunCommand executes the main.go with the given arguments and optional stdin input.
 // It returns the captured stdout, stderr buffers and the exit code. This helper is used
 // to test the protoc plugin behavior by running it as a Go program.

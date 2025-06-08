@@ -9,8 +9,13 @@ import (
 	"google.golang.org/protobuf/compiler/protogen"
 )
 
+// Config はジェネレーターの設定を保持します
+type Config struct {
+	PackageSuffix string
+}
+
 // Generate はProtocol Bufferファイルからコードを生成します
-func Generate(gen *protogen.Plugin) error {
+func Generate(gen *protogen.Plugin, config Config) error {
 	// 各ファイルを処理
 	for _, f := range gen.Files {
 		if !f.Generate {
@@ -32,6 +37,11 @@ func Generate(gen *protogen.Plugin) error {
 		pkgName := string(f.GoPackageName)
 		if pkgName == "" {
 			pkgName = filepath.Base(f.GoImportPath.String())
+		}
+
+		// package_suffixが指定されている場合は適用
+		if config.PackageSuffix != "" {
+			pkgName += config.PackageSuffix
 		}
 
 		// サービス情報をパース
