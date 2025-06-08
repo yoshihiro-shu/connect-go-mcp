@@ -23,6 +23,30 @@ jobs:
           sudo apt-get install -y protobuf-compiler
           protoc --version
 
+      - name: Install buf
+        run: |
+          curl -sSL "https://github.com/bufbuild/buf/releases/download/v1.28.1/buf-$(uname -s)-$(uname -m)" -o buf
+          sudo install buf /usr/local/bin/
+          rm buf
+          buf --version
+
+      - name: Install protoc-gen-go
+        run: |
+          go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+
+      - name: Install protoc-gen-connect-go
+        run: |
+          go install connectrpc.com/connect/cmd/protoc-gen-connect-go@latest
+
+      - name: Install protoc-gen-connect-go-mcp
+        run: |
+          sh ./deploy_local.sh
+
+      - name: Generate proto files
+        run: |
+          cd ./cmd/protoc-gen-connect-go-mcp
+          sh ./generate.sh
+
       - name: Test
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
