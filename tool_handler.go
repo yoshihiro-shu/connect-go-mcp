@@ -51,6 +51,12 @@ func (h *ToolHandler) httpRequest(ctx context.Context, req mcp.CallToolRequest, 
 
 	hreq.Header.Set("Content-Type", "application/json")
 
+	for k, v := range h.config.httpHeaders {
+		for _, vv := range v {
+			hreq.Header.Add(k, vv)
+		}
+	}
+
 	resp, err := h.config.httpClient.Do(hreq)
 	if err != nil {
 		return nil, err
