@@ -1,4 +1,4 @@
-package connect_mcpserver
+package connectgomcp
 
 import (
 	"bytes"
