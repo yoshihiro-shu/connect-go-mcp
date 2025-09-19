@@ -14,7 +14,7 @@ import (
 	connect "connectrpc.com/connect"
 	context "context"
 	errors "errors"
-	v1 "github.com/yoshihiro-shu/connect-go-mcp/internal/gen/greet/v1"
+	gen "github.com/yoshihiro-shu/connect-go-mcp/cmd/protoc-gen-connect-go-mcp/testdata/greet/gen"
 	http "net/http"
 	strings "strings"
 )
@@ -48,9 +48,9 @@ const (
 // GreetServiceClient is a client for the greet.v1.GreetService service.
 type GreetServiceClient interface {
 	// Greet RPC
-	Greet(context.Context, *connect.Request[v1.GreetRequest]) (*connect.Response[v1.GreetResponse], error)
+	Greet(context.Context, *connect.Request[gen.GreetRequest]) (*connect.Response[gen.GreetResponse], error)
 	// Ping RPC
-	Ping(context.Context, *connect.Request[v1.PingRequest]) (*connect.Response[v1.PingResponse], error)
+	Ping(context.Context, *connect.Request[gen.PingRequest]) (*connect.Response[gen.PingResponse], error)
 }
 
 // NewGreetServiceClient constructs a client for the greet.v1.GreetService service. By default, it
@@ -62,15 +62,15 @@ type GreetServiceClient interface {
 // http://api.acme.com or https://acme.com/grpc).
 func NewGreetServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) GreetServiceClient {
 	baseURL = strings.TrimRight(baseURL, "/")
-	greetServiceMethods := v1.File_greet_proto.Services().ByName("GreetService").Methods()
+	greetServiceMethods := gen.File_greet_proto.Services().ByName("GreetService").Methods()
 	return &greetServiceClient{
-		greet: connect.NewClient[v1.GreetRequest, v1.GreetResponse](
+		greet: connect.NewClient[gen.GreetRequest, gen.GreetResponse](
 			httpClient,
 			baseURL+GreetServiceGreetProcedure,
 			connect.WithSchema(greetServiceMethods.ByName("Greet")),
 			connect.WithClientOptions(opts...),
 		),
-		ping: connect.NewClient[v1.PingRequest, v1.PingResponse](
+		ping: connect.NewClient[gen.PingRequest, gen.PingResponse](
 			httpClient,
 			baseURL+GreetServicePingProcedure,
 			connect.WithSchema(greetServiceMethods.ByName("Ping")),
@@ -81,26 +81,26 @@ func NewGreetServiceClient(httpClient connect.HTTPClient, baseURL string, opts .
 
 // greetServiceClient implements GreetServiceClient.
 type greetServiceClient struct {
-	greet *connect.Client[v1.GreetRequest, v1.GreetResponse]
-	ping  *connect.Client[v1.PingRequest, v1.PingResponse]
+	greet *connect.Client[gen.GreetRequest, gen.GreetResponse]
+	ping  *connect.Client[gen.PingRequest, gen.PingResponse]
 }
 
 // Greet calls greet.v1.GreetService.Greet.
-func (c *greetServiceClient) Greet(ctx context.Context, req *connect.Request[v1.GreetRequest]) (*connect.Response[v1.GreetResponse], error) {
+func (c *greetServiceClient) Greet(ctx context.Context, req *connect.Request[gen.GreetRequest]) (*connect.Response[gen.GreetResponse], error) {
 	return c.greet.CallUnary(ctx, req)
 }
 
 // Ping calls greet.v1.GreetService.Ping.
-func (c *greetServiceClient) Ping(ctx context.Context, req *connect.Request[v1.PingRequest]) (*connect.Response[v1.PingResponse], error) {
+func (c *greetServiceClient) Ping(ctx context.Context, req *connect.Request[gen.PingRequest]) (*connect.Response[gen.PingResponse], error) {
 	return c.ping.CallUnary(ctx, req)
 }
 
 // GreetServiceHandler is an implementation of the greet.v1.GreetService service.
 type GreetServiceHandler interface {
 	// Greet RPC
-	Greet(context.Context, *connect.Request[v1.GreetRequest]) (*connect.Response[v1.GreetResponse], error)
+	Greet(context.Context, *connect.Request[gen.GreetRequest]) (*connect.Response[gen.GreetResponse], error)
 	// Ping RPC
-	Ping(context.Context, *connect.Request[v1.PingRequest]) (*connect.Response[v1.PingResponse], error)
+	Ping(context.Context, *connect.Request[gen.PingRequest]) (*connect.Response[gen.PingResponse], error)
 }
 
 // NewGreetServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -109,7 +109,7 @@ type GreetServiceHandler interface {
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
 func NewGreetServiceHandler(svc GreetServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
-	greetServiceMethods := v1.File_greet_proto.Services().ByName("GreetService").Methods()
+	greetServiceMethods := gen.File_greet_proto.Services().ByName("GreetService").Methods()
 	greetServiceGreetHandler := connect.NewUnaryHandler(
 		GreetServiceGreetProcedure,
 		svc.Greet,
@@ -137,10 +137,10 @@ func NewGreetServiceHandler(svc GreetServiceHandler, opts ...connect.HandlerOpti
 // UnimplementedGreetServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedGreetServiceHandler struct{}
 
-func (UnimplementedGreetServiceHandler) Greet(context.Context, *connect.Request[v1.GreetRequest]) (*connect.Response[v1.GreetResponse], error) {
+func (UnimplementedGreetServiceHandler) Greet(context.Context, *connect.Request[gen.GreetRequest]) (*connect.Response[gen.GreetResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("greet.v1.GreetService.Greet is not implemented"))
 }
 
-func (UnimplementedGreetServiceHandler) Ping(context.Context, *connect.Request[v1.PingRequest]) (*connect.Response[v1.PingResponse], error) {
+func (UnimplementedGreetServiceHandler) Ping(context.Context, *connect.Request[gen.PingRequest]) (*connect.Response[gen.PingResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("greet.v1.GreetService.Ping is not implemented"))
 }

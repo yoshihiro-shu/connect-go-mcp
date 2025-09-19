@@ -8,7 +8,7 @@ syntax = "proto3";
 
 package greet.v1;
 
-option go_package = "github.com/yoshihiro-shu/connect-go-mcp/internal/gen/greet/v1;greetv1";
+option go_package = "github.com/yoshihiro-shu/connect-go-mcp/cmd/protoc-gen-connect-go-mcp/testdata/greet/gen;greetv1";
 
 // Greeting request
 // This is a test for multi-line comments
