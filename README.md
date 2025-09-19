@@ -9,15 +9,16 @@ A Protocol Buffers compiler plugin that generates MCP (Model Context Protocol) s
 ## Features
 
 - **Automatic MCP Server Generation**: Converts gRPC services to MCP server implementations
+- **Official MCP SDK**: Uses the official MCP Go SDK for maximum compatibility
 - **Flexible Package Organization**: Supports custom package suffixes for better code organization
-- **Comment Preservation**: Preserves comments from proto files as tool descriptions
+- **Multi-line Comment Support**: Preserves formatting in proto file comments for better tool descriptions
 - **Connect-Go Compatible**: Works alongside `protoc-gen-connect-go` for full gRPC support
 
 ## Installation
 
 ### Prerequisites
 
-- Go 1.21 or later
+- Go 1.23 or later
 - Protocol Buffers compiler (`protoc`)
 - `buf` CLI tool (recommended)
 
@@ -116,28 +117,30 @@ option go_package = "github.com/example/gen/greet/v1;greetv1";
 // Greeting service for MCP demonstration
 service GreetService {
   // Greet RPC
+  // This method greets a user
+  // Parameter name: The name of the person to greet (required)
+  // Returns: A personalized greeting message
   rpc Greet(GreetRequest) returns (GreetResponse);
 
   // Ping RPC
+  // Simple ping-pong method for testing connectivity
   rpc Ping(PingRequest) returns (PingResponse);
 }
 
 message GreetRequest {
-  // Greeting request
-  string name = 1;
+  string name = 1; // Name of the person to greet
 }
 
 message GreetResponse {
-  string message = 1;
+  string message = 1; // Greeting message
 }
 
 message PingRequest {
-  // Ping request
-  string message = 1;
+  string message = 1; // Ping message
 }
 
 message PingResponse {
-  string message = 1;
+  string message = 1; // Pong response
 }
 ```
 
@@ -150,34 +153,46 @@ package greetv1mcp
 import (
     "context"
 
-    "github.com/mark3labs/mcp-go/mcp"
-    "github.com/mark3labs/mcp-go/server"
+    "github.com/modelcontextprotocol/go-sdk/mcp"
     connectgomcp "github.com/yoshihiro-shu/connect-go-mcp"
 )
 
 // NewGreetServiceMCPServer creates a configured MCP server for GreetService
-func NewGreetServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) *server.MCPServer {
-    server := server.NewMCPServer("GreetService", "1.0.0")
+func NewGreetServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) *mcp.Server {
+    server := mcp.NewServer(&mcp.Implementation{
+        Name:    "GreetService",
+        Version: "1.0.0",
+    }, nil)
 
     toolHandler := connectgomcp.NewToolHandler(baseURL, opts...)
 
-    server.AddTool(
-        mcp.NewTool("Greet RPC",
-            mcp.WithDescription("Greeting request"),
-            mcp.WithString("name"),
-        ),
-        func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-            return toolHandler.Handle(ctx, req, "Greet")
+    mcp.AddTool(
+        server,
+        &mcp.Tool{
+            Name:        "Greet RPC",
+            Description: "This method greets a user\nParameter name: The name of the person to greet (required)\nReturns: A personalized greeting message",
+        },
+        func(ctx context.Context, req *mcp.CallToolRequest, input map[string]interface{}) (*mcp.CallToolResult, interface{}, error) {
+            result, err := toolHandler.Handle(ctx, req, "Greet")
+            if err != nil {
+                return nil, nil, err
+            }
+            return result, nil, nil
         },
     )
 
-    server.AddTool(
-        mcp.NewTool("Ping RPC",
-            mcp.WithDescription("Ping request"),
-            mcp.WithString("message"),
-        ),
-        func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-            return toolHandler.Handle(ctx, req, "Ping")
+    mcp.AddTool(
+        server,
+        &mcp.Tool{
+            Name:        "Ping RPC",
+            Description: "Simple ping-pong method for testing connectivity",
+        },
+        func(ctx context.Context, req *mcp.CallToolRequest, input map[string]interface{}) (*mcp.CallToolResult, interface{}, error) {
+            result, err := toolHandler.Handle(ctx, req, "Ping")
+            if err != nil {
+                return nil, nil, err
+            }
+            return result, nil, nil
         },
     )
 
@@ -191,8 +206,10 @@ func NewGreetServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption)
 package main
 
 import (
+    "context"
     "log"
 
+    "github.com/modelcontextprotocol/go-sdk/mcp"
     greetv1mcp "github.com/example/gen/greet/v1/greetv1mcp"
 )
 
@@ -200,8 +217,9 @@ func main() {
     // Create MCP server instance
     mcpServer := greetv1mcp.NewGreetServiceMCPServer("http://localhost:8080")
 
-    // Start the MCP server
-    if err := mcpServer.Serve(); err != nil {
+    // Start the MCP server with stdio transport
+    ctx := context.Background()
+    if err := mcpServer.Run(ctx, &mcp.StdioTransport{}); err != nil {
         log.Fatal(err)
     }
 }
@@ -253,6 +271,7 @@ This project is licensed under the MIT License - see the [LICENSE](../../LICENSE
 
 ## Related Projects
 
-- [mcp-go](https://github.com/mark3labs/mcp-go) - Go implementation of MCP
+- [go-sdk](https://github.com/modelcontextprotocol/go-sdk) - Official MCP Go SDK
 - [connect-go](https://github.com/connectrpc/connect-go) - Simple, reliable, interoperable RPC
-- [buf](https://github.com/bufbuild/buf) - Protocol Buffer toolkit 
+- [buf](https://github.com/bufbuild/buf) - Protocol Buffer toolkit
+- [Model Context Protocol](https://modelcontextprotocol.io/) - Official MCP documentation 
