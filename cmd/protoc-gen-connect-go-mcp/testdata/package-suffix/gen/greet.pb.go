@@ -220,7 +220,7 @@ const file_greet_proto_rawDesc = "" +
 	"\amessage\x18\x01 \x01(\tR\amessage2\x83\x01\n" +
 	"\fGreetService\x12:\n" +
 	"\x05Greet\x12\x16.greet.v1.GreetRequest\x1a\x17.greet.v1.GreetResponse\"\x00\x127\n" +
-	"\x04Ping\x12\x15.greet.v1.PingRequest\x1a\x16.greet.v1.PingResponse\"\x00BGZEgithub.com/yoshihiro-shu/connect-go-mcp/internal/gen/greet/v1;greetv1b\x06proto3"
+	"\x04Ping\x12\x15.greet.v1.PingRequest\x1a\x16.greet.v1.PingResponse\"\x00BkZigithub.com/yoshihiro-shu/connect-go-mcp/cmd/protoc-gen-connect-go-mcp/testdata/package-suffix/gen;greetv1b\x06proto3"
 
 var (
 	file_greet_proto_rawDescOnce sync.Once

@@ -4,33 +4,45 @@ package greetv1mcp
 import (
 	"context"
 
-	"github.com/mark3labs/mcp-go/mcp"
-	"github.com/mark3labs/mcp-go/server"
+	"github.com/modelcontextprotocol/go-sdk/mcp"
 	connectgomcp "github.com/yoshihiro-shu/connect-go-mcp"
 )
 
 // NewMCPServerWithTools creates and returns a configured GreetService MCP server
-func NewGreetServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) *server.MCPServer {
-	server := server.NewMCPServer("GreetService", "1.0.0")
+func NewGreetServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) *mcp.Server {
+	server := mcp.NewServer(&mcp.Implementation{
+		Name:    "GreetService",
+		Version: "1.0.0",
+	}, nil)
 
 	toolHandler := connectgomcp.NewToolHandler(baseURL, opts...)
-	server.AddTool(
-		mcp.NewTool("Greet RPC",
-			mcp.WithDescription("Greeting request"),
-			mcp.WithString("name"),
-		),
-		func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-			return toolHandler.Handle(ctx, req, "Greet")
+	mcp.AddTool(
+		server,
+		&mcp.Tool{
+			Name:        "Greet RPC",
+			Description: "Greeting request\nThis is a test for multi-line comments\nParameter name: The name of the person to greet",
+		},
+		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]interface{}) (*mcp.CallToolResult, interface{}, error) {
+			result, err := toolHandler.Handle(ctx, req, "Greet")
+			if err != nil {
+				return nil, nil, err
+			}
+			return result, nil, nil
 		},
 	)
 
-	server.AddTool(
-		mcp.NewTool("Ping RPC",
-			mcp.WithDescription("Ping request"),
-			mcp.WithString("message"),
-		),
-		func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-			return toolHandler.Handle(ctx, req, "Ping")
+	mcp.AddTool(
+		server,
+		&mcp.Tool{
+			Name:        "Ping RPC",
+			Description: "Ping request",
+		},
+		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]interface{}) (*mcp.CallToolResult, interface{}, error) {
+			result, err := toolHandler.Handle(ctx, req, "Ping")
+			if err != nil {
+				return nil, nil, err
+			}
+			return result, nil, nil
 		},
 	)
 

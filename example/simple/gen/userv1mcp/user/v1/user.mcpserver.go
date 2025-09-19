@@ -4,45 +4,60 @@ package userv1mcp
 import (
 	"context"
 
-	"github.com/mark3labs/mcp-go/mcp"
-	"github.com/mark3labs/mcp-go/server"
+	"github.com/modelcontextprotocol/go-sdk/mcp"
 	connectgomcp "github.com/yoshihiro-shu/connect-go-mcp"
 )
 
 // NewMCPServerWithTools creates and returns a configured UserService MCP server
-func NewUserServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) *server.MCPServer {
-	server := server.NewMCPServer("UserService", "1.0.0")
+func NewUserServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) *mcp.Server {
+	server := mcp.NewServer(&mcp.Implementation{
+		Name:    "UserService",
+		Version: "1.0.0",
+	}, nil)
 
 	toolHandler := connectgomcp.NewToolHandler(baseURL, opts...)
-	server.AddTool(
-		mcp.NewTool("GetUser - Get user information",
-			mcp.WithDescription("Request to get user information Parameter user_id: User ID (required) Return value: User name, email address, creation timestamp"),
-			mcp.WithString("user_id"),
-		),
-		func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-			return toolHandler.Handle(ctx, req, "GetUser")
+	mcp.AddTool(
+		server,
+		&mcp.Tool{
+			Name:        "GetUser - Get user information",
+			Description: "Request to get user information\nParameter user_id: User ID (required)\nReturn value: User name, email address, creation timestamp",
+		},
+		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]interface{}) (*mcp.CallToolResult, interface{}, error) {
+			result, err := toolHandler.Handle(ctx, req, "GetUser")
+			if err != nil {
+				return nil, nil, err
+			}
+			return result, nil, nil
 		},
 	)
 
-	server.AddTool(
-		mcp.NewTool("CreateUser - Create a user",
-			mcp.WithDescription("Request to create a user Parameters name: User name (required), email: Email address (required) Return value: Created user information"),
-			mcp.WithString("name"),
-			mcp.WithString("email"),
-		),
-		func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-			return toolHandler.Handle(ctx, req, "CreateUser")
+	mcp.AddTool(
+		server,
+		&mcp.Tool{
+			Name:        "CreateUser - Create a user",
+			Description: "Request to create a user\nParameters name: User name (required), email: Email address (required)\nReturn value: Created user information",
+		},
+		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]interface{}) (*mcp.CallToolResult, interface{}, error) {
+			result, err := toolHandler.Handle(ctx, req, "CreateUser")
+			if err != nil {
+				return nil, nil, err
+			}
+			return result, nil, nil
 		},
 	)
 
-	server.AddTool(
-		mcp.NewTool("ListUsers - Get user list",
-			mcp.WithDescription("Request to get user list Parameters limit: Number of records to retrieve (optional), offset: Offset (optional) Return value: User list"),
-			mcp.WithNumber("limit"),
-			mcp.WithNumber("offset"),
-		),
-		func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-			return toolHandler.Handle(ctx, req, "ListUsers")
+	mcp.AddTool(
+		server,
+		&mcp.Tool{
+			Name:        "ListUsers - Get user list",
+			Description: "Request to get user list\nParameters limit: Number of records to retrieve (optional), offset: Offset (optional)\nReturn value: User list",
+		},
+		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]interface{}) (*mcp.CallToolResult, interface{}, error) {
+			result, err := toolHandler.Handle(ctx, req, "ListUsers")
+			if err != nil {
+				return nil, nil, err
+			}
+			return result, nil, nil
 		},
 	)
 

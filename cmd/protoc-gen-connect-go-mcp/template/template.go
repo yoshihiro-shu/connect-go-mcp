@@ -19,10 +19,12 @@ func GenerateCode(g *protogen.GeneratedFile, pkgName string, services []parser.S
 	g.P()
 
 	// Code generation for each service
-	for _, service := range services {
+	for i, service := range services {
 		// NewMCPServerWithTools function
 		generateServerWithTools(g, service)
-		g.P()
+		if i < len(services)-1 {
+			g.P()
+		}
 	}
 
 	return nil
@@ -33,8 +35,7 @@ func generateImports(g *protogen.GeneratedFile, services []parser.Service) {
 	g.P("import (")
 	g.P(`	"context"`)
 	g.P()
-	g.P(`	"github.com/mark3labs/mcp-go/mcp"`)
-	g.P(`	"github.com/mark3labs/mcp-go/server"`)
+	g.P(`	"github.com/modelcontextprotocol/go-sdk/mcp"`)
 	g.P(`	connectgomcp "github.com/yoshihiro-shu/connect-go-mcp"`)
 	g.P(")")
 }
@@ -42,53 +43,54 @@ func generateImports(g *protogen.GeneratedFile, services []parser.Service) {
 // generateServerWithTools generates MCP server initialization function
 func generateServerWithTools(g *protogen.GeneratedFile, service parser.Service) {
 	g.P("// NewMCPServerWithTools creates and returns a configured ", service.Name, " MCP server")
-	g.P("func New", service.Name, "MCPServer(baseURL string, opts ...connectgomcp.ClientOption) *server.MCPServer {")
-	g.P("  server := server.NewMCPServer(\"", service.Name, "\", \"1.0.0\")")
+	g.P("func New", service.Name, "MCPServer(baseURL string, opts ...connectgomcp.ClientOption) *mcp.Server {")
+	g.P("  server := mcp.NewServer(&mcp.Implementation{")
+	g.P("    Name: \"", service.Name, "\",")
+	g.P("    Version: \"1.0.0\",")
+	g.P("  }, nil)")
 	g.P()
 	g.P("  toolHandler := connectgomcp.NewToolHandler(baseURL, opts...)")
 
 	// Tool registration for each method
-	for _, method := range service.Methods {
+	for i, method := range service.Methods {
 		toolName := method.Comment
 		if toolName == "" {
 			toolName = method.Name
 		}
 
-		g.P("  server.AddTool(")
-		g.P(`    mcp.NewTool("`, toolName, `",`)
-
-		// Description
-		if method.RequestComment != "" {
-			g.P(`      mcp.WithDescription("`, escapeString(method.RequestComment), `"),`)
+		description := method.RequestComment
+		if description == "" {
+			description = "Call " + method.Name + " method"
 		}
 
-		// Parameter definitions
-		for _, field := range method.RequestFields {
-			paramType := getParamType(field.Type)
-
-			g.P(`      mcp.With`, paramType, `("`, field.Name, `",`)
-			if field.IsRequired {
-				g.P(`        mcp.Required(),`)
-			}
-			if field.Description != "" {
-				g.P(`        mcp.Description("`, escapeString(field.Description), `"),`)
-			}
-			g.P(`      ),`)
-		}
-
-		g.P("    ),")
-		g.P("    func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {")
-		g.P("      return toolHandler.Handle(ctx, req, \"", method.Name, "\")")
+		g.P("  mcp.AddTool(")
+		g.P("    server,")
+		g.P("    &mcp.Tool{")
+		g.P("      Name: \"", toolName, "\",")
+		g.P("      Description: \"", escapeString(description), "\",")
+		g.P("    },")
+		g.P("    func(ctx context.Context, req *mcp.CallToolRequest, input map[string]interface{}) (*mcp.CallToolResult, interface{}, error) {")
+		g.P("      result, err := toolHandler.Handle(ctx, req, \"", method.Name, "\")")
+		g.P("      if err != nil {")
+		g.P("        return nil, nil, err")
+		g.P("      }")
+		g.P("      return result, nil, nil")
 		g.P("    },")
 		g.P("  )")
-		g.P()
+		
+		// Add blank line between methods, but not after the last one
+		if i < len(service.Methods)-1 {
+			g.P()
+		}
 	}
-
+	
+	g.P()
 	g.P("  return server")
 	g.P("}")
 }
 
 // getParamType gets MCP parameter type
+// Note: The new SDK uses a different approach for parameters
 func getParamType(goType string) string {
 	switch goType {
 	case "string":
@@ -104,5 +106,7 @@ func getParamType(goType string) string {
 
 // escapeString escapes strings
 func escapeString(s string) string {
-	return strings.ReplaceAll(s, `"`, `\"`)
+	s = strings.ReplaceAll(s, `"`, `\"`)
+	s = strings.ReplaceAll(s, "\n", `\n`)
+	return s
 }

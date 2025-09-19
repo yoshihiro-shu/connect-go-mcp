@@ -8,7 +8,7 @@ syntax = "proto3";
 
 package greet.v1;
 
-option go_package = "github.com/yoshihiro-shu/connect-go-mcp/internal/gen/greet/v1;greetv1";
+option go_package = "github.com/yoshihiro-shu/connect-go-mcp/cmd/protoc-gen-connect-go-mcp/testdata/package-suffix/gen;greetv1";
 
 // Greeting request
 message GreetRequest {

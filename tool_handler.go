@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/mark3labs/mcp-go/mcp"
+	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
 
 type ToolHandler struct {
@@ -35,7 +35,7 @@ func NewToolHandler(baseURL string, opts ...ClientOption) *ToolHandler {
 	return &ToolHandler{config: config}
 }
 
-func (h *ToolHandler) httpRequest(ctx context.Context, req mcp.CallToolRequest, endpoint string) (*mcp.CallToolResult, error) {
+func (h *ToolHandler) httpRequest(ctx context.Context, req *mcp.CallToolRequest, endpoint string) (*mcp.CallToolResult, error) {
 	arguments := req.Params.Arguments
 
 	reqj, err := json.Marshal(arguments)
@@ -75,6 +75,6 @@ func (h *ToolHandler) httpRequest(ctx context.Context, req mcp.CallToolRequest, 
 	return &result, nil
 }
 
-func (h *ToolHandler) Handle(ctx context.Context, req mcp.CallToolRequest, endpoint string) (*mcp.CallToolResult, error) {
+func (h *ToolHandler) Handle(ctx context.Context, req *mcp.CallToolRequest, endpoint string) (*mcp.CallToolResult, error) {
 	return h.httpRequest(ctx, req, endpoint)
 }
