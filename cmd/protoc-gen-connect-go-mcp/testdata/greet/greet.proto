@@ -11,6 +11,8 @@ package greet.v1;
 option go_package = "github.com/yoshihiro-shu/connect-go-mcp/internal/gen/greet/v1;greetv1";
 
 // Greeting request
+// This is a test for multi-line comments
+// Parameter name: The name of the person to greet
 message GreetRequest {
   string name = 1; // Name
 }

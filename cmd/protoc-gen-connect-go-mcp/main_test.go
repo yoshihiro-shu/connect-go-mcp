@@ -93,7 +93,7 @@ func TestGenerate(t *testing.T) {
 	assert.Contains(t, content, `func NewGreetServiceMCPServer`)
 	assert.Contains(t, content, `mcp.AddTool(`)
 	assert.Contains(t, content, `Name:        "Greet RPC",`)
-	assert.Contains(t, content, `Description: "Greeting request",`)
+	assert.Contains(t, content, `Description: "Greeting request\nThis is a test for multi-line comments\nParameter name: The name of the person to greet",`)
 	assert.Contains(t, content, `Name:        "Ping RPC",`)
 	assert.Contains(t, content, `Description: "Ping request",`)
 	// Parameters are handled differently in the new SDK

@@ -106,5 +106,7 @@ func getParamType(goType string) string {
 
 // escapeString escapes strings
 func escapeString(s string) string {
-	return strings.ReplaceAll(s, `"`, `\"`)
+	s = strings.ReplaceAll(s, `"`, `\"`)
+	s = strings.ReplaceAll(s, "\n", `\n`)
+	return s
 }

@@ -20,7 +20,7 @@ func NewGreetServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption)
 		server,
 		&mcp.Tool{
 			Name:        "Greet RPC",
-			Description: "Greeting request",
+			Description: "Greeting request\nThis is a test for multi-line comments\nParameter name: The name of the person to greet",
 		},
 		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]interface{}) (*mcp.CallToolResult, interface{}, error) {
 			result, err := toolHandler.Handle(ctx, req, "Greet")

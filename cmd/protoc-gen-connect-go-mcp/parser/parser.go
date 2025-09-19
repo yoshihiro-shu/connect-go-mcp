@@ -97,7 +97,7 @@ func extractComment(comment protogen.Comments) string {
 		lines[i] = strings.TrimSpace(strings.TrimPrefix(line, "//"))
 	}
 
-	return strings.Join(lines, " ")
+	return strings.Join(lines, "\n")
 }
 
 // extractRequestComment はリクエストメッセージのコメントを抽出します
