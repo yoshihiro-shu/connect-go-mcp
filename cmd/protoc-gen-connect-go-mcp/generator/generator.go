@@ -55,8 +55,11 @@ func Generate(gen *protogen.Plugin, config Config) error {
 			packageNameWithSuffix := pkgName + suffix
 			connectDirName := packageNameWithSuffix
 
+			// ファイル名のベース部分のみを取得（connect-goと同じ仕様）
+			baseName := filepath.Base(f.GeneratedFilenamePrefix)
+
 			// 出力ファイル名とインポートパスを決定
-			outputName = filepath.Join(connectDirName, f.GeneratedFilenamePrefix+".mcpserver.go")
+			outputName = filepath.Join(connectDirName, baseName+".mcpserver.go")
 			importPath = f.GoImportPath + "/" + protogen.GoImportPath(connectDirName)
 
 			// パッケージ名を更新

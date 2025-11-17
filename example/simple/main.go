@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	userv1mcp "github.com/yoshihiro-shu/connect-go-mcp/example/simple/gen/userv1mcp/user/v1"
+	userv1mcp "github.com/yoshihiro-shu/connect-go-mcp/example/simple/gen/userv1mcp"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 	connectgomcp "github.com/yoshihiro-shu/connect-go-mcp"
