@@ -66,7 +66,7 @@ func generateServerWithTools(g *protogen.GeneratedFile, service parser.Service) 
 		g.P("  mcp.AddTool(")
 		g.P("    server,")
 		g.P("    &mcp.Tool{")
-		g.P("      Name: \"", toolName, "\",")
+		g.P("      Name: \"", escapeString(toolName), "\",")
 		g.P("      Description: \"", escapeString(description), "\",")
 		g.P("    },")
 		g.P("    func(ctx context.Context, req *mcp.CallToolRequest, input map[string]interface{}) (*mcp.CallToolResult, interface{}, error) {")
@@ -77,13 +77,13 @@ func generateServerWithTools(g *protogen.GeneratedFile, service parser.Service) 
 		g.P("      return result, nil, nil")
 		g.P("    },")
 		g.P("  )")
-		
+
 		// Add blank line between methods, but not after the last one
 		if i < len(service.Methods)-1 {
 			g.P()
 		}
 	}
-	
+
 	g.P()
 	g.P("  return server")
 	g.P("}")
@@ -104,9 +104,13 @@ func getParamType(goType string) string {
 	}
 }
 
-// escapeString escapes strings
+// escapeString escapes strings for Go string literals
 func escapeString(s string) string {
+	// Order matters: backslash must be escaped first
+	s = strings.ReplaceAll(s, `\`, `\\`)
 	s = strings.ReplaceAll(s, `"`, `\"`)
 	s = strings.ReplaceAll(s, "\n", `\n`)
+	s = strings.ReplaceAll(s, "\r", `\r`)
+	s = strings.ReplaceAll(s, "\t", `\t`)
 	return s
 }

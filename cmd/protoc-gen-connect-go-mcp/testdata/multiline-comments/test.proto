@@ -1,0 +1,133 @@
+syntax = "proto3";
+
+package test.v1;
+
+option go_package = "github.com/test/gen/test/v1;testv1";
+
+// TestService provides test functionality
+// This service demonstrates handling of multiline comments in proto files
+service TestService {
+  // CreateUser - Creates a new user account in the system.
+  // NOTE: This method requires valid email verification before account activation.
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
+
+  // GetUser - Retrieves user information by user ID.
+  //
+  // Prerequisites:
+  // - Valid user ID must be provided
+  // - User must exist in the system
+  rpc GetUser(GetUserRequest) returns (GetUserResponse);
+
+  // UpdateUser - Updates an existing user's information.
+  //
+  // This operation allows updating user profile data.
+  // Only the fields provided in the request will be updated.
+  rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse);
+
+  // DeleteUser - Deletes a user account from the system.
+  //
+  // WARNING: This operation is irreversible!
+  // All user data will be permanently deleted.
+  rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse);
+
+  // SyncData
+  // Synchronizes data between the client and server.
+  // This operation may take several minutes depending on the data size.
+  rpc SyncData(SyncDataRequest) returns (SyncDataResponse);
+
+  // ProcessPayment - Processes a payment transaction.
+  //
+  // This is a test RPC for demonstrating multiline comments.
+  // It includes special characters like "quotes" and \backslashes\.
+  // Multiple lines should be properly escaped in the generated code.
+  rpc ProcessPayment(ProcessPaymentRequest) returns (ProcessPaymentResponse);
+}
+
+// CreateUser - Creates a new user account.
+//
+// Prerequisites:
+// - Valid email address
+// - User must not already exist
+// - Terms of service must be accepted
+message CreateUserRequest {
+  string email = 1;
+  string username = 2;
+  string password = 3;
+}
+
+message CreateUserResponse {
+  string user_id = 1;
+  bool activated = 2;
+}
+
+// GetUser - Retrieves user information.
+//
+// Returns:
+// - User profile data if found
+// - Error if user does not exist
+message GetUserRequest {
+  string user_id = 1;
+}
+
+message GetUserResponse {
+  string user_id = 1;
+  string email = 2;
+  string username = 3;
+  bool activated = 4;
+  int64 created_at = 5;
+}
+
+// UpdateUser - Updates user information.
+//
+// Only non-empty fields will be updated.
+// To clear a field, use the appropriate "clear_*" flag.
+message UpdateUserRequest {
+  string user_id = 1;
+  string email = 2;
+  string username = 3;
+}
+
+message UpdateUserResponse {
+  bool success = 1;
+  string updated_at = 2;
+}
+
+// DeleteUser - Permanently deletes a user.
+//
+// WARNING: This cannot be undone!
+message DeleteUserRequest {
+  string user_id = 1;
+  // Confirmation token to prevent accidental deletion
+  string confirmation_token = 2;
+}
+
+message DeleteUserResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+// SyncDataRequest
+// Request message for synchronizing data.
+// The sync operation will process all pending changes since the last sync.
+message SyncDataRequest {
+  string client_id = 1;
+  int64 last_sync_timestamp = 2;
+}
+
+message SyncDataResponse {
+  bool success = 1;
+  int32 items_synced = 2;
+}
+
+// ProcessPaymentRequest
+// Request for processing a payment.
+message ProcessPaymentRequest {
+  string transaction_id = 1;
+  double amount = 2;
+  string currency = 3;
+}
+
+message ProcessPaymentResponse {
+  bool success = 1;
+  string confirmation_code = 2;
+}
