@@ -3,6 +3,7 @@ package connectgomcp
 import (
 	"context"
 	"fmt"
+	"regexp"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
@@ -50,4 +51,16 @@ func ListTools(ctx context.Context, server *mcp.Server) ([]*mcp.Tool, error) {
 	}
 
 	return result.Tools, nil
+}
+
+func FilterTools(server *mcp.Server, excludePattern *regexp.Regexp) *mcp.Server {
+	tools, err := ListTools(context.Background(), server)
+	if err == nil {
+		for _, tool := range tools {
+			if excludePattern.MatchString(tool.Name) {
+				server.RemoveTools(tool.Name)
+			}
+		}
+	}
+	return server
 }
