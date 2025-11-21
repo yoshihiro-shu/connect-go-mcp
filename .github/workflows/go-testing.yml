@@ -1,21 +1,35 @@
-name: go-testing
+name: Build and Test
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - develop
   pull_request:
+    branches:
+      - main
+      - develop
+  workflow_dispatch:
 
 permissions: read-all
 
 jobs:
-  build:
+  test:
+    name: Test
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go-version: ['1.23.x', '1.24.x']
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Set up Go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v5
         with:
-          go-version: 1.24.x
+          go-version: ${{ matrix.go-version }}
+          cache: true
 
       - name: Install Protocol Buffers
         run: |
@@ -23,9 +37,87 @@ jobs:
           sudo apt-get install -y protobuf-compiler
           protoc --version
 
-      - name: Test
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install buf
         run: |
-          cd ./cmd/protoc-gen-connect-go-mcp
-          go test -v ./...
+          go install github.com/bufbuild/buf/cmd/buf@latest
+          buf --version
+
+      - name: Verify dependencies
+        run: go mod verify
+
+      - name: Build plugin
+        run: |
+          go build -v ./cmd/protoc-gen-connect-go-mcp
+          ./protoc-gen-connect-go-mcp --version
+
+      - name: Generate test data
+        run: |
+          cd cmd/protoc-gen-connect-go-mcp
+          ./generate.sh
+
+      - name: Run tests
+        run: go test -v -race -coverprofile=coverage.txt -covermode=atomic ./...
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        if: matrix.go-version == '1.24.x'
+        with:
+          file: ./coverage.txt
+          flags: unittests
+          name: codecov-umbrella
+        continue-on-error: true
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24.x'
+          cache: true
+
+      - name: Install Protocol Buffers
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y protobuf-compiler
+
+      - name: Install buf
+        run: |
+          go install github.com/bufbuild/buf/cmd/buf@latest
+
+      - name: Build plugin
+        run: |
+          go build -v -o protoc-gen-connect-go-mcp ./cmd/protoc-gen-connect-go-mcp
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: protoc-gen-connect-go-mcp
+          path: protoc-gen-connect-go-mcp
+          retention-days: 7
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24.x'
+          cache: true
+
+      - name: Run golangci-lint
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: latest
+          args: --timeout=5m
+        continue-on-error: true
