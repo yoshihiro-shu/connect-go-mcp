@@ -1,15 +1,10 @@
 name: Build and Test
 
 on:
-  push:
-    branches:
-      - main
-      - develop
   pull_request:
-    branches:
-      - main
-      - develop
+    # すべてのブランチへのプルリクエストで実行
   workflow_dispatch:
+    # 手動実行も可能
 
 permissions: read-all
 
