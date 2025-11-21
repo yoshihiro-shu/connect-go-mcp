@@ -42,13 +42,19 @@ jobs:
           go install github.com/bufbuild/buf/cmd/buf@latest
           buf --version
 
+      - name: Install required plugins
+        run: |
+          go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+          go install connectrpc.com/connect/cmd/protoc-gen-connect-go@latest
+
       - name: Verify dependencies
         run: go mod verify
 
-      - name: Build plugin
+      - name: Build and install plugin
         run: |
-          go build -v ./cmd/protoc-gen-connect-go-mcp
-          ./protoc-gen-connect-go-mcp --version
+          go build -v -o protoc-gen-connect-go-mcp ./cmd/protoc-gen-connect-go-mcp
+          sudo cp protoc-gen-connect-go-mcp /usr/local/bin/
+          protoc-gen-connect-go-mcp --version
 
       - name: Generate test data
         run: |
@@ -89,6 +95,11 @@ jobs:
       - name: Install buf
         run: |
           go install github.com/bufbuild/buf/cmd/buf@latest
+
+      - name: Install required plugins
+        run: |
+          go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+          go install connectrpc.com/connect/cmd/protoc-gen-connect-go@latest
 
       - name: Build plugin
         run: |
