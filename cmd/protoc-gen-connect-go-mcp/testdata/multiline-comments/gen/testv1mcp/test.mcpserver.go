@@ -40,8 +40,8 @@ func NewTestServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) 
 				},
 			},
 		},
-		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]interface{}) (*mcp.CallToolResult, interface{}, error) {
-			result, err := toolHandler.Handle(ctx, req, "CreateUser")
+		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]any) (*mcp.CallToolResult, any, error) {
+			result, err := toolHandler.Handle(ctx, req, "CreateUser", input)
 			if err != nil {
 				return nil, nil, err
 			}
@@ -64,8 +64,8 @@ func NewTestServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) 
 				},
 			},
 		},
-		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]interface{}) (*mcp.CallToolResult, interface{}, error) {
-			result, err := toolHandler.Handle(ctx, req, "GetUser")
+		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]any) (*mcp.CallToolResult, any, error) {
+			result, err := toolHandler.Handle(ctx, req, "GetUser", input)
 			if err != nil {
 				return nil, nil, err
 			}
@@ -96,8 +96,8 @@ func NewTestServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) 
 				},
 			},
 		},
-		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]interface{}) (*mcp.CallToolResult, interface{}, error) {
-			result, err := toolHandler.Handle(ctx, req, "UpdateUser")
+		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]any) (*mcp.CallToolResult, any, error) {
+			result, err := toolHandler.Handle(ctx, req, "UpdateUser", input)
 			if err != nil {
 				return nil, nil, err
 			}
@@ -124,8 +124,8 @@ func NewTestServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) 
 				},
 			},
 		},
-		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]interface{}) (*mcp.CallToolResult, interface{}, error) {
-			result, err := toolHandler.Handle(ctx, req, "DeleteUser")
+		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]any) (*mcp.CallToolResult, any, error) {
+			result, err := toolHandler.Handle(ctx, req, "DeleteUser", input)
 			if err != nil {
 				return nil, nil, err
 			}
@@ -152,8 +152,8 @@ func NewTestServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) 
 				},
 			},
 		},
-		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]interface{}) (*mcp.CallToolResult, interface{}, error) {
-			result, err := toolHandler.Handle(ctx, req, "SyncData")
+		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]any) (*mcp.CallToolResult, any, error) {
+			result, err := toolHandler.Handle(ctx, req, "SyncData", input)
 			if err != nil {
 				return nil, nil, err
 			}
@@ -184,8 +184,8 @@ func NewTestServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) 
 				},
 			},
 		},
-		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]interface{}) (*mcp.CallToolResult, interface{}, error) {
-			result, err := toolHandler.Handle(ctx, req, "ProcessPayment")
+		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]any) (*mcp.CallToolResult, any, error) {
+			result, err := toolHandler.Handle(ctx, req, "ProcessPayment", input)
 			if err != nil {
 				return nil, nil, err
 			}

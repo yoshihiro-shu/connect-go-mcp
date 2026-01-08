@@ -32,8 +32,8 @@ func NewUserServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) 
 				},
 			},
 		},
-		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]interface{}) (*mcp.CallToolResult, interface{}, error) {
-			result, err := toolHandler.Handle(ctx, req, "GetUser")
+		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]any) (*mcp.CallToolResult, any, error) {
+			result, err := toolHandler.Handle(ctx, req, "GetUser", input)
 			if err != nil {
 				return nil, nil, err
 			}
@@ -60,8 +60,8 @@ func NewUserServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) 
 				},
 			},
 		},
-		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]interface{}) (*mcp.CallToolResult, interface{}, error) {
-			result, err := toolHandler.Handle(ctx, req, "CreateUser")
+		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]any) (*mcp.CallToolResult, any, error) {
+			result, err := toolHandler.Handle(ctx, req, "CreateUser", input)
 			if err != nil {
 				return nil, nil, err
 			}
@@ -88,8 +88,8 @@ func NewUserServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) 
 				},
 			},
 		},
-		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]interface{}) (*mcp.CallToolResult, interface{}, error) {
-			result, err := toolHandler.Handle(ctx, req, "ListUsers")
+		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]any) (*mcp.CallToolResult, any, error) {
+			result, err := toolHandler.Handle(ctx, req, "ListUsers", input)
 			if err != nil {
 				return nil, nil, err
 			}
