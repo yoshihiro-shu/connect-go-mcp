@@ -4,6 +4,7 @@ package testv1mcp
 import (
 	"context"
 
+	"github.com/google/jsonschema-go/jsonschema"
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 	connectgomcp "github.com/yoshihiro-shu/connect-go-mcp"
 )
@@ -21,6 +22,23 @@ func NewTestServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) 
 		&mcp.Tool{
 			Name:        "CreateUser - Creates a new user account in the system.\nNOTE: This method requires valid email verification before account activation.",
 			Description: "CreateUser - Creates a new user account.\n\nPrerequisites:\n- Valid email address\n- User must not already exist\n- Terms of service must be accepted",
+			InputSchema: &jsonschema.Schema{
+				Type: "object",
+				Properties: map[string]*jsonschema.Schema{
+					"email": {
+						Type:        "string",
+						Description: "email",
+					},
+					"username": {
+						Type:        "string",
+						Description: "username",
+					},
+					"password": {
+						Type:        "string",
+						Description: "password",
+					},
+				},
+			},
 		},
 		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]interface{}) (*mcp.CallToolResult, interface{}, error) {
 			result, err := toolHandler.Handle(ctx, req, "CreateUser")
@@ -36,6 +54,15 @@ func NewTestServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) 
 		&mcp.Tool{
 			Name:        "GetUser - Retrieves user information by user ID.\n\nPrerequisites:\n- Valid user ID must be provided\n- User must exist in the system",
 			Description: "GetUser - Retrieves user information.\n\nReturns:\n- User profile data if found\n- Error if user does not exist",
+			InputSchema: &jsonschema.Schema{
+				Type: "object",
+				Properties: map[string]*jsonschema.Schema{
+					"user_id": {
+						Type:        "string",
+						Description: "user_id",
+					},
+				},
+			},
 		},
 		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]interface{}) (*mcp.CallToolResult, interface{}, error) {
 			result, err := toolHandler.Handle(ctx, req, "GetUser")
@@ -51,6 +78,23 @@ func NewTestServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) 
 		&mcp.Tool{
 			Name:        "UpdateUser - Updates an existing user's information.\n\nThis operation allows updating user profile data.\nOnly the fields provided in the request will be updated.",
 			Description: "UpdateUser - Updates user information.\n\nOnly non-empty fields will be updated.\nTo clear a field, use the appropriate \"clear_*\" flag.",
+			InputSchema: &jsonschema.Schema{
+				Type: "object",
+				Properties: map[string]*jsonschema.Schema{
+					"user_id": {
+						Type:        "string",
+						Description: "user_id",
+					},
+					"email": {
+						Type:        "string",
+						Description: "email",
+					},
+					"username": {
+						Type:        "string",
+						Description: "username",
+					},
+				},
+			},
 		},
 		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]interface{}) (*mcp.CallToolResult, interface{}, error) {
 			result, err := toolHandler.Handle(ctx, req, "UpdateUser")
@@ -66,6 +110,19 @@ func NewTestServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) 
 		&mcp.Tool{
 			Name:        "DeleteUser - Deletes a user account from the system.\n\nWARNING: This operation is irreversible!\nAll user data will be permanently deleted.",
 			Description: "DeleteUser - Permanently deletes a user.\n\nWARNING: This cannot be undone!",
+			InputSchema: &jsonschema.Schema{
+				Type: "object",
+				Properties: map[string]*jsonschema.Schema{
+					"user_id": {
+						Type:        "string",
+						Description: "user_id",
+					},
+					"confirmation_token": {
+						Type:        "string",
+						Description: "Confirmation token to prevent accidental deletion",
+					},
+				},
+			},
 		},
 		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]interface{}) (*mcp.CallToolResult, interface{}, error) {
 			result, err := toolHandler.Handle(ctx, req, "DeleteUser")
@@ -81,6 +138,19 @@ func NewTestServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) 
 		&mcp.Tool{
 			Name:        "SyncData\nSynchronizes data between the client and server.\nThis operation may take several minutes depending on the data size.",
 			Description: "SyncDataRequest\nRequest message for synchronizing data.\nThe sync operation will process all pending changes since the last sync.",
+			InputSchema: &jsonschema.Schema{
+				Type: "object",
+				Properties: map[string]*jsonschema.Schema{
+					"client_id": {
+						Type:        "string",
+						Description: "client_id",
+					},
+					"last_sync_timestamp": {
+						Type:        "integer",
+						Description: "last_sync_timestamp",
+					},
+				},
+			},
 		},
 		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]interface{}) (*mcp.CallToolResult, interface{}, error) {
 			result, err := toolHandler.Handle(ctx, req, "SyncData")
@@ -96,6 +166,23 @@ func NewTestServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) 
 		&mcp.Tool{
 			Name:        "ProcessPayment - Processes a payment transaction.\n\nThis is a test RPC for demonstrating multiline comments.\nIt includes special characters like \"quotes\" and \\backslashes\\.\nMultiple lines should be properly escaped in the generated code.",
 			Description: "ProcessPaymentRequest\nRequest for processing a payment.",
+			InputSchema: &jsonschema.Schema{
+				Type: "object",
+				Properties: map[string]*jsonschema.Schema{
+					"transaction_id": {
+						Type:        "string",
+						Description: "transaction_id",
+					},
+					"amount": {
+						Type:        "number",
+						Description: "amount",
+					},
+					"currency": {
+						Type:        "string",
+						Description: "currency",
+					},
+				},
+			},
 		},
 		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]interface{}) (*mcp.CallToolResult, interface{}, error) {
 			result, err := toolHandler.Handle(ctx, req, "ProcessPayment")
