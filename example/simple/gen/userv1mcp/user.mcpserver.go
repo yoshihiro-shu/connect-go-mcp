@@ -4,6 +4,7 @@ package userv1mcp
 import (
 	"context"
 
+	"github.com/google/jsonschema-go/jsonschema"
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 	connectgomcp "github.com/yoshihiro-shu/connect-go-mcp"
 )
@@ -11,7 +12,7 @@ import (
 // NewMCPServerWithTools creates and returns a configured UserService MCP server
 func NewUserServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) *mcp.Server {
 	server := mcp.NewServer(&mcp.Implementation{
-		Name:    "UserService",
+		Name:    "User management service",
 		Version: "1.0.0",
 	}, nil)
 
@@ -21,6 +22,15 @@ func NewUserServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) 
 		&mcp.Tool{
 			Name:        "GetUser - Get user information",
 			Description: "Request to get user information\nParameter user_id: User ID (required)\nReturn value: User name, email address, creation timestamp",
+			InputSchema: &jsonschema.Schema{
+				Type: "object",
+				Properties: map[string]*jsonschema.Schema{
+					"user_id": {
+						Type:        "string",
+						Description: "user_id",
+					},
+				},
+			},
 		},
 		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]interface{}) (*mcp.CallToolResult, interface{}, error) {
 			result, err := toolHandler.Handle(ctx, req, "GetUser")
@@ -36,6 +46,19 @@ func NewUserServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) 
 		&mcp.Tool{
 			Name:        "CreateUser - Create a user",
 			Description: "Request to create a user\nParameters name: User name (required), email: Email address (required)\nReturn value: Created user information",
+			InputSchema: &jsonschema.Schema{
+				Type: "object",
+				Properties: map[string]*jsonschema.Schema{
+					"name": {
+						Type:        "string",
+						Description: "name",
+					},
+					"email": {
+						Type:        "string",
+						Description: "email",
+					},
+				},
+			},
 		},
 		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]interface{}) (*mcp.CallToolResult, interface{}, error) {
 			result, err := toolHandler.Handle(ctx, req, "CreateUser")
@@ -51,6 +74,19 @@ func NewUserServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) 
 		&mcp.Tool{
 			Name:        "ListUsers - Get user list",
 			Description: "Request to get user list\nParameters limit: Number of records to retrieve (optional), offset: Offset (optional)\nReturn value: User list",
+			InputSchema: &jsonschema.Schema{
+				Type: "object",
+				Properties: map[string]*jsonschema.Schema{
+					"limit": {
+						Type:        "integer",
+						Description: "limit",
+					},
+					"offset": {
+						Type:        "integer",
+						Description: "offset",
+					},
+				},
+			},
 		},
 		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]interface{}) (*mcp.CallToolResult, interface{}, error) {
 			result, err := toolHandler.Handle(ctx, req, "ListUsers")

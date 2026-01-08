@@ -9,6 +9,7 @@ A Protocol Buffers compiler plugin that generates MCP (Model Context Protocol) s
 ## Features
 
 - **Automatic MCP Server Generation**: Converts gRPC services to MCP server implementations
+- **InputSchema Generation**: Automatically generates JSON Schema for tool parameters from proto message fields
 - **Official MCP SDK**: Uses the official MCP Go SDK for maximum compatibility
 - **Flexible Package Organization**: Supports custom package suffixes for better code organization
 - **Multi-line Comment Support**: Preserves formatting in proto file comments for better tool descriptions
@@ -153,6 +154,7 @@ package greetv1mcp
 import (
     "context"
 
+    "github.com/google/jsonschema-go/jsonschema"
     "github.com/modelcontextprotocol/go-sdk/mcp"
     connectgomcp "github.com/yoshihiro-shu/connect-go-mcp"
 )
@@ -160,7 +162,7 @@ import (
 // NewGreetServiceMCPServer creates a configured MCP server for GreetService
 func NewGreetServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) *mcp.Server {
     server := mcp.NewServer(&mcp.Implementation{
-        Name:    "GreetService",
+        Name:    "Greeting service for MCP demonstration",
         Version: "1.0.0",
     }, nil)
 
@@ -171,6 +173,15 @@ func NewGreetServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption)
         &mcp.Tool{
             Name:        "Greet RPC",
             Description: "This method greets a user\nParameter name: The name of the person to greet (required)\nReturns: A personalized greeting message",
+            InputSchema: &jsonschema.Schema{
+                Type: "object",
+                Properties: map[string]*jsonschema.Schema{
+                    "name": {
+                        Type:        "string",
+                        Description: "name",
+                    },
+                },
+            },
         },
         func(ctx context.Context, req *mcp.CallToolRequest, input map[string]interface{}) (*mcp.CallToolResult, interface{}, error) {
             result, err := toolHandler.Handle(ctx, req, "Greet")
@@ -186,6 +197,15 @@ func NewGreetServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption)
         &mcp.Tool{
             Name:        "Ping RPC",
             Description: "Simple ping-pong method for testing connectivity",
+            InputSchema: &jsonschema.Schema{
+                Type: "object",
+                Properties: map[string]*jsonschema.Schema{
+                    "message": {
+                        Type:        "string",
+                        Description: "message",
+                    },
+                },
+            },
         },
         func(ctx context.Context, req *mcp.CallToolRequest, input map[string]interface{}) (*mcp.CallToolResult, interface{}, error) {
             result, err := toolHandler.Handle(ctx, req, "Ping")
@@ -231,9 +251,22 @@ The plugin generates:
 
 1. **MCP Server Constructor**: `New{ServiceName}MCPServer()` function
 2. **Tool Definitions**: Each RPC method becomes an MCP tool
-3. **Parameter Mapping**: Proto message fields become tool parameters
-4. **Comments**: Preserved as tool descriptions
-5. **Type Safety**: Full Go type safety for all operations
+3. **InputSchema**: JSON Schema for tool parameters with type definitions
+4. **Parameter Mapping**: Proto message fields become tool parameters
+5. **Comments**: Preserved as tool descriptions
+6. **Type Safety**: Full Go type safety for all operations
+
+### InputSchema Type Mapping
+
+Proto types are automatically mapped to JSON Schema types:
+
+| Proto Type | JSON Schema Type |
+|------------|------------------|
+| `string` | `string` |
+| `bool` | `boolean` |
+| `int32`, `int64` | `integer` |
+| `float`, `double` | `number` |
+| Other types | `object` |
 
 ## Integration with MCP Ecosystem
 

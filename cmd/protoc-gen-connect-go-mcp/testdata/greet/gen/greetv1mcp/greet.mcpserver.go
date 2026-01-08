@@ -4,6 +4,7 @@ package greetv1mcp
 import (
 	"context"
 
+	"github.com/google/jsonschema-go/jsonschema"
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 	connectgomcp "github.com/yoshihiro-shu/connect-go-mcp"
 )
@@ -21,6 +22,15 @@ func NewGreetServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption)
 		&mcp.Tool{
 			Name:        "Greet RPC",
 			Description: "Greeting request\nThis is a test for multi-line comments\nParameter name: The name of the person to greet",
+			InputSchema: &jsonschema.Schema{
+				Type: "object",
+				Properties: map[string]*jsonschema.Schema{
+					"name": {
+						Type:        "string",
+						Description: "name",
+					},
+				},
+			},
 		},
 		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]interface{}) (*mcp.CallToolResult, interface{}, error) {
 			result, err := toolHandler.Handle(ctx, req, "Greet")
@@ -36,6 +46,15 @@ func NewGreetServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption)
 		&mcp.Tool{
 			Name:        "Ping RPC",
 			Description: "Ping request",
+			InputSchema: &jsonschema.Schema{
+				Type: "object",
+				Properties: map[string]*jsonschema.Schema{
+					"message": {
+						Type:        "string",
+						Description: "message",
+					},
+				},
+			},
 		},
 		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]interface{}) (*mcp.CallToolResult, interface{}, error) {
 			result, err := toolHandler.Handle(ctx, req, "Ping")

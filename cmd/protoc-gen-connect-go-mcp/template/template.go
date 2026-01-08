@@ -35,6 +35,7 @@ func generateImports(g *protogen.GeneratedFile, services []parser.Service) {
 	g.P("import (")
 	g.P(`	"context"`)
 	g.P()
+	g.P(`	"github.com/google/jsonschema-go/jsonschema"`)
 	g.P(`	"github.com/modelcontextprotocol/go-sdk/mcp"`)
 	g.P(`	connectgomcp "github.com/yoshihiro-shu/connect-go-mcp"`)
 	g.P(")")
@@ -74,6 +75,7 @@ func generateServerWithTools(g *protogen.GeneratedFile, service parser.Service) 
 		g.P("    &mcp.Tool{")
 		g.P("      Name: \"", escapeString(toolName), "\",")
 		g.P("      Description: \"", escapeString(description), "\",")
+		generateInputSchema(g, method.RequestFields)
 		g.P("    },")
 		g.P("    func(ctx context.Context, req *mcp.CallToolRequest, input map[string]interface{}) (*mcp.CallToolResult, interface{}, error) {")
 		g.P("      result, err := toolHandler.Handle(ctx, req, \"", method.Name, "\")")
@@ -95,18 +97,58 @@ func generateServerWithTools(g *protogen.GeneratedFile, service parser.Service) 
 	g.P("}")
 }
 
-// getParamType gets MCP parameter type
-// Note: The new SDK uses a different approach for parameters
-func getParamType(goType string) string {
+// generateInputSchema generates InputSchema for a tool
+func generateInputSchema(g *protogen.GeneratedFile, fields []parser.Field) {
+	g.P("      InputSchema: &jsonschema.Schema{")
+	g.P("        Type: \"object\",")
+
+	if len(fields) > 0 {
+		g.P("        Properties: map[string]*jsonschema.Schema{")
+		for _, field := range fields {
+			jsonType := getJSONSchemaType(field.Type)
+			description := field.Comment
+			if description == "" {
+				description = field.Name
+			}
+			g.P("          \"", field.Name, "\": {")
+			g.P("            Type: \"", jsonType, "\",")
+			g.P("            Description: \"", escapeString(description), "\",")
+			g.P("          },")
+		}
+		g.P("        },")
+
+		// Generate required fields
+		var requiredFields []string
+		for _, field := range fields {
+			if field.IsRequired {
+				requiredFields = append(requiredFields, field.Name)
+			}
+		}
+		if len(requiredFields) > 0 {
+			g.P("        Required: []string{")
+			for _, name := range requiredFields {
+				g.P("          \"", name, "\",")
+			}
+			g.P("        },")
+		}
+	}
+
+	g.P("      },")
+}
+
+// getJSONSchemaType converts Go type to JSON Schema type
+func getJSONSchemaType(goType string) string {
 	switch goType {
 	case "string":
-		return "String"
+		return "string"
 	case "bool":
-		return "Bool"
-	case "int32", "int64", "float32", "float64":
-		return "Number"
+		return "boolean"
+	case "int32", "int64":
+		return "integer"
+	case "float32", "float64":
+		return "number"
 	default:
-		return "Object"
+		return "object"
 	}
 }
 
