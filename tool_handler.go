@@ -66,7 +66,7 @@ func (h *ToolHandler) httpRequest(ctx context.Context, req *mcp.CallToolRequest,
 	}
 
 	var result mcp.CallToolResult
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+	if err := json.NewDecoder(resp.Body).Decode(&result.StructuredContent); err != nil {
 		return nil, err
 	}
 
