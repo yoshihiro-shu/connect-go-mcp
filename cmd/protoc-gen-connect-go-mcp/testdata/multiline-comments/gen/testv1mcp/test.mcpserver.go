@@ -22,8 +22,8 @@ func NewTestServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) 
 			Name:        "CreateUser - Creates a new user account in the system.\nNOTE: This method requires valid email verification before account activation.",
 			Description: "CreateUser - Creates a new user account.\n\nPrerequisites:\n- Valid email address\n- User must not already exist\n- Terms of service must be accepted",
 		},
-		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]interface{}) (*mcp.CallToolResult, interface{}, error) {
-			result, err := toolHandler.Handle(ctx, req, "CreateUser")
+		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]any) (*mcp.CallToolResult, any, error) {
+			result, err := toolHandler.Handle(ctx, req, "CreateUser", input)
 			if err != nil {
 				return nil, nil, err
 			}
@@ -37,8 +37,8 @@ func NewTestServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) 
 			Name:        "GetUser - Retrieves user information by user ID.\n\nPrerequisites:\n- Valid user ID must be provided\n- User must exist in the system",
 			Description: "GetUser - Retrieves user information.\n\nReturns:\n- User profile data if found\n- Error if user does not exist",
 		},
-		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]interface{}) (*mcp.CallToolResult, interface{}, error) {
-			result, err := toolHandler.Handle(ctx, req, "GetUser")
+		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]any) (*mcp.CallToolResult, any, error) {
+			result, err := toolHandler.Handle(ctx, req, "GetUser", input)
 			if err != nil {
 				return nil, nil, err
 			}
@@ -52,8 +52,8 @@ func NewTestServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) 
 			Name:        "UpdateUser - Updates an existing user's information.\n\nThis operation allows updating user profile data.\nOnly the fields provided in the request will be updated.",
 			Description: "UpdateUser - Updates user information.\n\nOnly non-empty fields will be updated.\nTo clear a field, use the appropriate \"clear_*\" flag.",
 		},
-		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]interface{}) (*mcp.CallToolResult, interface{}, error) {
-			result, err := toolHandler.Handle(ctx, req, "UpdateUser")
+		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]any) (*mcp.CallToolResult, any, error) {
+			result, err := toolHandler.Handle(ctx, req, "UpdateUser", input)
 			if err != nil {
 				return nil, nil, err
 			}
@@ -67,8 +67,8 @@ func NewTestServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) 
 			Name:        "DeleteUser - Deletes a user account from the system.\n\nWARNING: This operation is irreversible!\nAll user data will be permanently deleted.",
 			Description: "DeleteUser - Permanently deletes a user.\n\nWARNING: This cannot be undone!",
 		},
-		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]interface{}) (*mcp.CallToolResult, interface{}, error) {
-			result, err := toolHandler.Handle(ctx, req, "DeleteUser")
+		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]any) (*mcp.CallToolResult, any, error) {
+			result, err := toolHandler.Handle(ctx, req, "DeleteUser", input)
 			if err != nil {
 				return nil, nil, err
 			}
@@ -82,8 +82,8 @@ func NewTestServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) 
 			Name:        "SyncData\nSynchronizes data between the client and server.\nThis operation may take several minutes depending on the data size.",
 			Description: "SyncDataRequest\nRequest message for synchronizing data.\nThe sync operation will process all pending changes since the last sync.",
 		},
-		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]interface{}) (*mcp.CallToolResult, interface{}, error) {
-			result, err := toolHandler.Handle(ctx, req, "SyncData")
+		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]any) (*mcp.CallToolResult, any, error) {
+			result, err := toolHandler.Handle(ctx, req, "SyncData", input)
 			if err != nil {
 				return nil, nil, err
 			}
@@ -97,8 +97,8 @@ func NewTestServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) 
 			Name:        "ProcessPayment - Processes a payment transaction.\n\nThis is a test RPC for demonstrating multiline comments.\nIt includes special characters like \"quotes\" and \\backslashes\\.\nMultiple lines should be properly escaped in the generated code.",
 			Description: "ProcessPaymentRequest\nRequest for processing a payment.",
 		},
-		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]interface{}) (*mcp.CallToolResult, interface{}, error) {
-			result, err := toolHandler.Handle(ctx, req, "ProcessPayment")
+		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]any) (*mcp.CallToolResult, any, error) {
+			result, err := toolHandler.Handle(ctx, req, "ProcessPayment", input)
 			if err != nil {
 				return nil, nil, err
 			}

@@ -22,8 +22,8 @@ func NewGreetServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption)
 			Name:        "Greet RPC",
 			Description: "Greeting request\nThis is a test for multi-line comments\nParameter name: The name of the person to greet",
 		},
-		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]interface{}) (*mcp.CallToolResult, interface{}, error) {
-			result, err := toolHandler.Handle(ctx, req, "Greet")
+		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]any) (*mcp.CallToolResult, any, error) {
+			result, err := toolHandler.Handle(ctx, req, "Greet", input)
 			if err != nil {
 				return nil, nil, err
 			}
@@ -37,8 +37,8 @@ func NewGreetServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption)
 			Name:        "Ping RPC",
 			Description: "Ping request",
 		},
-		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]interface{}) (*mcp.CallToolResult, interface{}, error) {
-			result, err := toolHandler.Handle(ctx, req, "Ping")
+		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]any) (*mcp.CallToolResult, any, error) {
+			result, err := toolHandler.Handle(ctx, req, "Ping", input)
 			if err != nil {
 				return nil, nil, err
 			}

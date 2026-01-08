@@ -172,8 +172,8 @@ func NewGreetServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption)
             Name:        "Greet RPC",
             Description: "This method greets a user\nParameter name: The name of the person to greet (required)\nReturns: A personalized greeting message",
         },
-        func(ctx context.Context, req *mcp.CallToolRequest, input map[string]interface{}) (*mcp.CallToolResult, interface{}, error) {
-            result, err := toolHandler.Handle(ctx, req, "Greet")
+        func(ctx context.Context, req *mcp.CallToolRequest, input map[string]any) (*mcp.CallToolResult, any, error) {
+            result, err := toolHandler.Handle(ctx, req, "Greet", input)
             if err != nil {
                 return nil, nil, err
             }
@@ -187,8 +187,8 @@ func NewGreetServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption)
             Name:        "Ping RPC",
             Description: "Simple ping-pong method for testing connectivity",
         },
-        func(ctx context.Context, req *mcp.CallToolRequest, input map[string]interface{}) (*mcp.CallToolResult, interface{}, error) {
-            result, err := toolHandler.Handle(ctx, req, "Ping")
+        func(ctx context.Context, req *mcp.CallToolRequest, input map[string]any) (*mcp.CallToolResult, any, error) {
+            result, err := toolHandler.Handle(ctx, req, "Ping", input)
             if err != nil {
                 return nil, nil, err
             }
