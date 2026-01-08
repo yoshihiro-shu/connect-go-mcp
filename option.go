@@ -14,7 +14,9 @@ type httpClientOption struct {
 }
 
 func (o *httpClientOption) apply(c *toolConfig) {
-	c.httpClient = o.client
+	if o.client != nil {
+		c.httpClient = o.client
+	}
 
 	if o.headers != nil {
 		c.httpHeaders = http.Header{}
