@@ -11,7 +11,7 @@ import (
 // NewMCPServerWithTools creates and returns a configured GreetService MCP server
 func NewGreetServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) *mcp.Server {
 	server := mcp.NewServer(&mcp.Implementation{
-		Name:    "GreetService",
+		Name:    "Greeting service",
 		Version: "1.0.0",
 	}, nil)
 

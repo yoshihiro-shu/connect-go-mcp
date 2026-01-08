@@ -42,10 +42,16 @@ func generateImports(g *protogen.GeneratedFile, services []parser.Service) {
 
 // generateServerWithTools generates MCP server initialization function
 func generateServerWithTools(g *protogen.GeneratedFile, service parser.Service) {
+	// Use service comment as MCP server name if available, otherwise use service name
+	serverName := service.Comment
+	if serverName == "" {
+		serverName = service.Name
+	}
+
 	g.P("// NewMCPServerWithTools creates and returns a configured ", service.Name, " MCP server")
 	g.P("func New", service.Name, "MCPServer(baseURL string, opts ...connectgomcp.ClientOption) *mcp.Server {")
 	g.P("  server := mcp.NewServer(&mcp.Implementation{")
-	g.P("    Name: \"", service.Name, "\",")
+	g.P("    Name: \"", escapeString(serverName), "\",")
 	g.P("    Version: \"1.0.0\",")
 	g.P("  }, nil)")
 	g.P()

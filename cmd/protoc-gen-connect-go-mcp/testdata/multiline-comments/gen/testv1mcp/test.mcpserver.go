@@ -11,7 +11,7 @@ import (
 // NewMCPServerWithTools creates and returns a configured TestService MCP server
 func NewTestServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) *mcp.Server {
 	server := mcp.NewServer(&mcp.Implementation{
-		Name:    "TestService",
+		Name:    "TestService provides test functionality\nThis service demonstrates handling of multiline comments in proto files",
 		Version: "1.0.0",
 	}, nil)
 
