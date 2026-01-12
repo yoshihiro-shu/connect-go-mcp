@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go-version: ['1.23.x', '1.24.x']
+        go-version: ['1.23.x', '1.24.x', '1.25.x']
 
     steps:
       - name: Checkout code
@@ -61,7 +61,7 @@ jobs:
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
-        if: matrix.go-version == '1.24.x'
+        if: matrix.go-version == '1.25.x'
         with:
           file: ./coverage.txt
           flags: unittests
@@ -79,7 +79,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.24.x'
+          go-version: '1.25.x'
           cache: true
 
       - name: Install Protocol Buffers
@@ -118,7 +118,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.24.x'
+          go-version: '1.25.x'
           cache: true
 
       - name: Run golangci-lint
