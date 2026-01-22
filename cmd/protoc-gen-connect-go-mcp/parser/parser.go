@@ -10,7 +10,7 @@ import (
 // Service はサービス定義情報を保持します
 type Service struct {
 	Name     string
-	FullName string // 完全修飾名 (e.g., "backend.v1.GulliverMCPService")
+	FullName string
 	Comment  string
 	Methods  []Method
 }

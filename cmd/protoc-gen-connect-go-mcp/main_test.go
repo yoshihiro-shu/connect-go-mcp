@@ -98,7 +98,9 @@ func TestGenerate(t *testing.T) {
 	// Descriptions should include both RPC comment and request comment
 	assert.Contains(t, content, `Description: "Greet RPC\n\nGreeting request`)
 	assert.Contains(t, content, `Description: "Ping RPC\n\nPing request",`)
-	// Parameters are handled differently in the new SDK
+	// Endpoint should be in package.Service/Method format
+	assert.Contains(t, content, `"greet.v1.GreetService/Greet"`)
+	assert.Contains(t, content, `"greet.v1.GreetService/Ping"`)
 }
 
 func TestGenerateMatchesBufOutput(t *testing.T) {
