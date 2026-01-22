@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
@@ -67,12 +68,24 @@ func (h *ToolHandler) httpRequest(ctx context.Context, req *mcp.CallToolRequest,
 		return nil, fmt.Errorf("status code: %d", resp.StatusCode)
 	}
 
-	var result mcp.CallToolResult
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
 		return nil, err
 	}
 
-	return &result, nil
+	var structuredData any
+	json.Unmarshal(body, &structuredData)
+
+	result := &mcp.CallToolResult{
+		Content: []mcp.Content{
+			&mcp.TextContent{
+				Text: string(body),
+			},
+		},
+		StructuredContent: structuredData,
+	}
+
+	return result, nil
 }
 
 func (h *ToolHandler) Handle(ctx context.Context, req *mcp.CallToolRequest, endpoint string) (*mcp.CallToolResult, error) {
