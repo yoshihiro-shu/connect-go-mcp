@@ -36,10 +36,8 @@ func NewToolHandler(baseURL string, opts ...ClientOption) *ToolHandler {
 	return &ToolHandler{config: config}
 }
 
-func (h *ToolHandler) httpRequest(ctx context.Context, req *mcp.CallToolRequest, endpoint string) (*mcp.CallToolResult, error) {
-	arguments := req.Params.Arguments
-
-	reqj, err := json.Marshal(arguments)
+func (h *ToolHandler) httpRequest(ctx context.Context, req *mcp.CallToolRequest, endpoint string, input map[string]any) (*mcp.CallToolResult, error) {
+	reqj, err := json.Marshal(input)
 	if err != nil {
 		return nil, err
 	}
@@ -88,6 +86,6 @@ func (h *ToolHandler) httpRequest(ctx context.Context, req *mcp.CallToolRequest,
 	return result, nil
 }
 
-func (h *ToolHandler) Handle(ctx context.Context, req *mcp.CallToolRequest, endpoint string) (*mcp.CallToolResult, error) {
-	return h.httpRequest(ctx, req, endpoint)
+func (h *ToolHandler) Handle(ctx context.Context, req *mcp.CallToolRequest, endpoint string, input map[string]any) (*mcp.CallToolResult, error) {
+	return h.httpRequest(ctx, req, endpoint, input)
 }
