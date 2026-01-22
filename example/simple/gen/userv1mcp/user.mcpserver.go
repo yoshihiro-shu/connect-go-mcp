@@ -12,7 +12,7 @@ import (
 // NewMCPServerWithTools creates and returns a configured UserService MCP server
 func NewUserServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) *mcp.Server {
 	server := mcp.NewServer(&mcp.Implementation{
-		Name:    "User management service",
+		Name:    "UserService",
 		Version: "1.0.0",
 	}, nil)
 
@@ -20,8 +20,8 @@ func NewUserServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) 
 	mcp.AddTool(
 		server,
 		&mcp.Tool{
-			Name:        "GetUser - Get user information",
-			Description: "Request to get user information\nParameter user_id: User ID (required)\nReturn value: User name, email address, creation timestamp",
+			Name:        "GetUser",
+			Description: "GetUser - Get user information\n\nRequest to get user information\nParameter user_id: User ID (required)\nReturn value: User name, email address, creation timestamp",
 			InputSchema: &jsonschema.Schema{
 				Type: "object",
 				Properties: map[string]*jsonschema.Schema{
@@ -33,7 +33,7 @@ func NewUserServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) 
 			},
 		},
 		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]any) (*mcp.CallToolResult, any, error) {
-			result, err := toolHandler.Handle(ctx, req, "GetUser", input)
+			result, err := toolHandler.Handle(ctx, req, "user.v1.UserService/GetUser", input)
 			if err != nil {
 				return nil, nil, err
 			}
@@ -44,8 +44,8 @@ func NewUserServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) 
 	mcp.AddTool(
 		server,
 		&mcp.Tool{
-			Name:        "CreateUser - Create a user",
-			Description: "Request to create a user\nParameters name: User name (required), email: Email address (required)\nReturn value: Created user information",
+			Name:        "CreateUser",
+			Description: "CreateUser - Create a user\n\nRequest to create a user\nParameters name: User name (required), email: Email address (required)\nReturn value: Created user information",
 			InputSchema: &jsonschema.Schema{
 				Type: "object",
 				Properties: map[string]*jsonschema.Schema{
@@ -61,7 +61,7 @@ func NewUserServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) 
 			},
 		},
 		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]any) (*mcp.CallToolResult, any, error) {
-			result, err := toolHandler.Handle(ctx, req, "CreateUser", input)
+			result, err := toolHandler.Handle(ctx, req, "user.v1.UserService/CreateUser", input)
 			if err != nil {
 				return nil, nil, err
 			}
@@ -72,8 +72,8 @@ func NewUserServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) 
 	mcp.AddTool(
 		server,
 		&mcp.Tool{
-			Name:        "ListUsers - Get user list",
-			Description: "Request to get user list\nParameters limit: Number of records to retrieve (optional), offset: Offset (optional)\nReturn value: User list",
+			Name:        "ListUsers",
+			Description: "ListUsers - Get user list\n\nRequest to get user list\nParameters limit: Number of records to retrieve (optional), offset: Offset (optional)\nReturn value: User list",
 			InputSchema: &jsonschema.Schema{
 				Type: "object",
 				Properties: map[string]*jsonschema.Schema{
@@ -89,7 +89,7 @@ func NewUserServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) 
 			},
 		},
 		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]any) (*mcp.CallToolResult, any, error) {
-			result, err := toolHandler.Handle(ctx, req, "ListUsers", input)
+			result, err := toolHandler.Handle(ctx, req, "user.v1.UserService/ListUsers", input)
 			if err != nil {
 				return nil, nil, err
 			}

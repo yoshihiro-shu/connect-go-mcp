@@ -9,9 +9,10 @@ import (
 
 // Service はサービス定義情報を保持します
 type Service struct {
-	Name    string
-	Comment string
-	Methods []Method
+	Name     string
+	FullName string
+	Comment  string
+	Methods  []Method
 }
 
 // Method はRPCメソッド情報を保持します
@@ -37,9 +38,10 @@ type Field struct {
 // ParseService はサービス定義をパースします
 func ParseService(s *protogen.Service) Service {
 	service := Service{
-		Name:    string(s.Desc.Name()),
-		Comment: extractComment(s.Comments.Leading),
-		Methods: make([]Method, 0, len(s.Methods)),
+		Name:     string(s.Desc.Name()),
+		FullName: string(s.Desc.FullName()),
+		Comment:  extractComment(s.Comments.Leading),
+		Methods:  make([]Method, 0, len(s.Methods)),
 	}
 
 	for _, m := range s.Methods {
