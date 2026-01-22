@@ -20,8 +20,8 @@ func NewGreetServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption)
 	mcp.AddTool(
 		server,
 		&mcp.Tool{
-			Name:        "Greet RPC",
-			Description: "Greeting request",
+			Name:        "Greet",
+			Description: "Greet RPC",
 			InputSchema: &jsonschema.Schema{
 				Type: "object",
 				Properties: map[string]*jsonschema.Schema{
@@ -44,8 +44,8 @@ func NewGreetServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption)
 	mcp.AddTool(
 		server,
 		&mcp.Tool{
-			Name:        "Ping RPC",
-			Description: "Ping request",
+			Name:        "Ping",
+			Description: "Ping RPC",
 			InputSchema: &jsonschema.Schema{
 				Type: "object",
 				Properties: map[string]*jsonschema.Schema{

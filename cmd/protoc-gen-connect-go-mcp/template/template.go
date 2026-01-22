@@ -60,12 +60,14 @@ func generateServerWithTools(g *protogen.GeneratedFile, service parser.Service) 
 
 	// Tool registration for each method
 	for i, method := range service.Methods {
-		toolName := method.Comment
-		if toolName == "" {
-			toolName = method.Name
-		}
+		// ツール名は常にRPCメソッド名を使用（MCP命名規則 ^[a-zA-Z0-9_-]{1,64}$ に準拠）
+		toolName := method.Name
 
-		description := method.RequestComment
+		// 説明はコメントを優先
+		description := method.Comment
+		if description == "" {
+			description = method.RequestComment
+		}
 		if description == "" {
 			description = "Call " + method.Name + " method"
 		}
