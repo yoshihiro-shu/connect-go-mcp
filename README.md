@@ -257,6 +257,83 @@ func main() {
 }
 ```
 
+### Client Options
+
+You can customize the HTTP client behavior using `ClientOption`:
+
+```go
+import (
+    "net/http"
+    "time"
+
+    connectgomcp "github.com/yoshihiro-shu/connect-go-mcp"
+    greetv1mcp "github.com/example/gen/greet/v1/greetv1mcp"
+)
+
+// Custom HTTP client with timeout
+customClient := &http.Client{
+    Timeout: 30 * time.Second,
+}
+
+// Custom headers (e.g., for authentication)
+headers := map[string]string{
+    "Authorization": "Bearer your-token",
+    "X-Custom-Header": "custom-value",
+}
+
+// Create server with options
+mcpServer := greetv1mcp.NewGreetServiceMCPServer(
+    "http://localhost:8080",
+    connectgomcp.WithHTTPClient(customClient),
+    connectgomcp.WithHTTPHeaders(headers),
+)
+```
+
+### Utility Functions
+
+#### ListTools
+
+Retrieve the list of registered tools from an MCP server:
+
+```go
+import (
+    "context"
+    "fmt"
+
+    connectgomcp "github.com/yoshihiro-shu/connect-go-mcp"
+    greetv1mcp "github.com/example/gen/greet/v1/greetv1mcp"
+)
+
+server := greetv1mcp.NewGreetServiceMCPServer("http://localhost:8080")
+tools, err := connectgomcp.ListTools(context.Background(), server)
+if err != nil {
+    log.Fatal(err)
+}
+
+for _, tool := range tools {
+    fmt.Printf("Tool: %s - %s\n", tool.Name, tool.Description)
+}
+```
+
+#### FilterTools
+
+Filter out tools by name pattern using regular expressions:
+
+```go
+import (
+    "regexp"
+
+    connectgomcp "github.com/yoshihiro-shu/connect-go-mcp"
+    greetv1mcp "github.com/example/gen/greet/v1/greetv1mcp"
+)
+
+server := greetv1mcp.NewGreetServiceMCPServer("http://localhost:8080")
+
+// Remove tools matching the pattern (e.g., remove all "List*" tools)
+excludePattern := regexp.MustCompile(`^List`)
+server = connectgomcp.FilterTools(server, excludePattern)
+```
+
 ## Generated Code Structure
 
 The plugin generates:
@@ -313,7 +390,7 @@ go test -v
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](../../LICENSE) file for details.
+This project is licensed under the MIT License.
 
 ## Related Projects
 
