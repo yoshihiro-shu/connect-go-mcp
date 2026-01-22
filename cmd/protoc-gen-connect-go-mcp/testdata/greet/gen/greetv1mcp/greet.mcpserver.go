@@ -33,7 +33,7 @@ func NewGreetServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption)
 			},
 		},
 		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]any) (*mcp.CallToolResult, any, error) {
-			result, err := toolHandler.Handle(ctx, req, "Greet", input)
+			result, err := toolHandler.Handle(ctx, req, "greet.v1.GreetService/Greet", input)
 			if err != nil {
 				return nil, nil, err
 			}
@@ -57,7 +57,7 @@ func NewGreetServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption)
 			},
 		},
 		func(ctx context.Context, req *mcp.CallToolRequest, input map[string]any) (*mcp.CallToolResult, any, error) {
-			result, err := toolHandler.Handle(ctx, req, "Ping", input)
+			result, err := toolHandler.Handle(ctx, req, "greet.v1.GreetService/Ping", input)
 			if err != nil {
 				return nil, nil, err
 			}
