@@ -12,7 +12,7 @@ import (
 // NewMCPServerWithTools creates and returns a configured GreetService MCP server
 func NewGreetServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) *mcp.Server {
 	server := mcp.NewServer(&mcp.Implementation{
-		Name:    "Greeting service",
+		Name:    "GreetService",
 		Version: "1.0.0",
 	}, nil)
 
@@ -20,8 +20,8 @@ func NewGreetServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption)
 	mcp.AddTool(
 		server,
 		&mcp.Tool{
-			Name:        "Greet RPC",
-			Description: "Greeting request\nThis is a test for multi-line comments\nParameter name: The name of the person to greet",
+			Name:        "Greet",
+			Description: "Greet RPC\n\nGreeting request\nThis is a test for multi-line comments\nParameter name: The name of the person to greet",
 			InputSchema: &jsonschema.Schema{
 				Type: "object",
 				Properties: map[string]*jsonschema.Schema{
@@ -44,8 +44,8 @@ func NewGreetServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption)
 	mcp.AddTool(
 		server,
 		&mcp.Tool{
-			Name:        "Ping RPC",
-			Description: "Ping request",
+			Name:        "Ping",
+			Description: "Ping RPC\n\nPing request",
 			InputSchema: &jsonschema.Schema{
 				Type: "object",
 				Properties: map[string]*jsonschema.Schema{

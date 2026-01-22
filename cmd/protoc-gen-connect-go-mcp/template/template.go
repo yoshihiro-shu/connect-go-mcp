@@ -43,11 +43,8 @@ func generateImports(g *protogen.GeneratedFile, services []parser.Service) {
 
 // generateServerWithTools generates MCP server initialization function
 func generateServerWithTools(g *protogen.GeneratedFile, service parser.Service) {
-	// Use service comment as MCP server name if available, otherwise use service name
-	serverName := service.Comment
-	if serverName == "" {
-		serverName = service.Name
-	}
+	// サービス名は常にprotoサービス名を使用（MCP命名規則 ^[a-zA-Z0-9_-]{1,64}$ に準拠）
+	serverName := service.Name
 
 	g.P("// NewMCPServerWithTools creates and returns a configured ", service.Name, " MCP server")
 	g.P("func New", service.Name, "MCPServer(baseURL string, opts ...connectgomcp.ClientOption) *mcp.Server {")
@@ -60,12 +57,18 @@ func generateServerWithTools(g *protogen.GeneratedFile, service parser.Service) 
 
 	// Tool registration for each method
 	for i, method := range service.Methods {
-		toolName := method.Comment
-		if toolName == "" {
-			toolName = method.Name
-		}
+		// ツール名は常にRPCメソッド名を使用（MCP命名規則 ^[a-zA-Z0-9_-]{1,64}$ に準拠）
+		toolName := method.Name
 
-		description := method.RequestComment
+		// 説明はRPCコメントとリクエストコメントを両方含める
+		var descriptionParts []string
+		if method.Comment != "" {
+			descriptionParts = append(descriptionParts, method.Comment)
+		}
+		if method.RequestComment != "" {
+			descriptionParts = append(descriptionParts, method.RequestComment)
+		}
+		description := strings.Join(descriptionParts, "\n\n")
 		if description == "" {
 			description = "Call " + method.Name + " method"
 		}
