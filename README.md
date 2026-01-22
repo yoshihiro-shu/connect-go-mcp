@@ -14,6 +14,7 @@ A Protocol Buffers compiler plugin that generates MCP (Model Context Protocol) s
 - **Flexible Package Organization**: Supports custom package suffixes for better code organization
 - **Multi-line Comment Support**: Preserves formatting in proto file comments for better tool descriptions
 - **Connect-Go Compatible**: Works alongside `protoc-gen-connect-go` for full gRPC support
+- **Standard Endpoint Paths**: Uses `{package}.{Service}/{Method}` format for Connect-Go compatibility
 
 ## Installation
 
@@ -159,10 +160,10 @@ import (
     connectgomcp "github.com/yoshihiro-shu/connect-go-mcp"
 )
 
-// NewGreetServiceMCPServer creates a configured MCP server for GreetService
+// NewMCPServerWithTools creates and returns a configured GreetService MCP server
 func NewGreetServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) *mcp.Server {
     server := mcp.NewServer(&mcp.Implementation{
-        Name:    "Greeting service for MCP demonstration",
+        Name:    "GreetService",
         Version: "1.0.0",
     }, nil)
 
@@ -171,8 +172,8 @@ func NewGreetServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption)
     mcp.AddTool(
         server,
         &mcp.Tool{
-            Name:        "Greet RPC",
-            Description: "This method greets a user\nParameter name: The name of the person to greet (required)\nReturns: A personalized greeting message",
+            Name:        "Greet",
+            Description: "Greet RPC\n\nGreeting request\nThis is a test for multi-line comments\nParameter name: The name of the person to greet",
             InputSchema: &jsonschema.Schema{
                 Type: "object",
                 Properties: map[string]*jsonschema.Schema{
@@ -184,7 +185,7 @@ func NewGreetServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption)
             },
         },
         func(ctx context.Context, req *mcp.CallToolRequest, input map[string]any) (*mcp.CallToolResult, any, error) {
-            result, err := toolHandler.Handle(ctx, req, "Greet", input)
+            result, err := toolHandler.Handle(ctx, req, "greet.v1.GreetService/Greet", input)
             if err != nil {
                 return nil, nil, err
             }
@@ -195,8 +196,8 @@ func NewGreetServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption)
     mcp.AddTool(
         server,
         &mcp.Tool{
-            Name:        "Ping RPC",
-            Description: "Simple ping-pong method for testing connectivity",
+            Name:        "Ping",
+            Description: "Ping RPC\n\nPing request",
             InputSchema: &jsonschema.Schema{
                 Type: "object",
                 Properties: map[string]*jsonschema.Schema{
@@ -208,7 +209,7 @@ func NewGreetServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption)
             },
         },
         func(ctx context.Context, req *mcp.CallToolRequest, input map[string]any) (*mcp.CallToolResult, any, error) {
-            result, err := toolHandler.Handle(ctx, req, "Ping", input)
+            result, err := toolHandler.Handle(ctx, req, "greet.v1.GreetService/Ping", input)
             if err != nil {
                 return nil, nil, err
             }
@@ -219,6 +220,17 @@ func NewGreetServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption)
     return server
 }
 ```
+
+### Endpoint Path Format
+
+The generated code uses Connect-Go's standard path format for endpoints:
+
+```
+{baseURL}/{package}.{Service}/{Method}
+```
+
+For example, with `baseURL = "http://localhost:8080"`:
+- `greet.v1.GreetService/Greet` → `http://localhost:8080/greet.v1.GreetService/Greet`
 
 ### Using the Generated Server
 
@@ -250,11 +262,12 @@ func main() {
 The plugin generates:
 
 1. **MCP Server Constructor**: `New{ServiceName}MCPServer()` function
-2. **Tool Definitions**: Each RPC method becomes an MCP tool
+2. **Tool Definitions**: Each RPC method becomes an MCP tool with method name (e.g., `Greet`)
 3. **InputSchema**: JSON Schema for tool parameters with type definitions
 4. **Parameter Mapping**: Proto message fields become tool parameters
-5. **Comments**: Preserved as tool descriptions
+5. **Comments**: Preserved as tool descriptions (both RPC comments and request message comments)
 6. **Type Safety**: Full Go type safety for all operations
+7. **Endpoint Paths**: Uses fully qualified service name format (`{package}.{Service}/{Method}`)
 
 ### InputSchema Type Mapping
 
