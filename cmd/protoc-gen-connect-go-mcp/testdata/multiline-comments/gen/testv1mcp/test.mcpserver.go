@@ -21,7 +21,7 @@ func NewTestServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) 
 		server,
 		&mcp.Tool{
 			Name:        "CreateUser",
-			Description: "CreateUser - Creates a new user account in the system.\nNOTE: This method requires valid email verification before account activation.",
+			Description: "CreateUser - Creates a new user account in the system.\nNOTE: This method requires valid email verification before account activation.\n\nCreateUser - Creates a new user account.\n\nPrerequisites:\n- Valid email address\n- User must not already exist\n- Terms of service must be accepted",
 			InputSchema: &jsonschema.Schema{
 				Type: "object",
 				Properties: map[string]*jsonschema.Schema{
@@ -53,7 +53,7 @@ func NewTestServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) 
 		server,
 		&mcp.Tool{
 			Name:        "GetUser",
-			Description: "GetUser - Retrieves user information by user ID.\n\nPrerequisites:\n- Valid user ID must be provided\n- User must exist in the system",
+			Description: "GetUser - Retrieves user information by user ID.\n\nPrerequisites:\n- Valid user ID must be provided\n- User must exist in the system\n\nGetUser - Retrieves user information.\n\nReturns:\n- User profile data if found\n- Error if user does not exist",
 			InputSchema: &jsonschema.Schema{
 				Type: "object",
 				Properties: map[string]*jsonschema.Schema{
@@ -77,7 +77,7 @@ func NewTestServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) 
 		server,
 		&mcp.Tool{
 			Name:        "UpdateUser",
-			Description: "UpdateUser - Updates an existing user's information.\n\nThis operation allows updating user profile data.\nOnly the fields provided in the request will be updated.",
+			Description: "UpdateUser - Updates an existing user's information.\n\nThis operation allows updating user profile data.\nOnly the fields provided in the request will be updated.\n\nUpdateUser - Updates user information.\n\nOnly non-empty fields will be updated.\nTo clear a field, use the appropriate \"clear_*\" flag.",
 			InputSchema: &jsonschema.Schema{
 				Type: "object",
 				Properties: map[string]*jsonschema.Schema{
@@ -109,7 +109,7 @@ func NewTestServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) 
 		server,
 		&mcp.Tool{
 			Name:        "DeleteUser",
-			Description: "DeleteUser - Deletes a user account from the system.\n\nWARNING: This operation is irreversible!\nAll user data will be permanently deleted.",
+			Description: "DeleteUser - Deletes a user account from the system.\n\nWARNING: This operation is irreversible!\nAll user data will be permanently deleted.\n\nDeleteUser - Permanently deletes a user.\n\nWARNING: This cannot be undone!",
 			InputSchema: &jsonschema.Schema{
 				Type: "object",
 				Properties: map[string]*jsonschema.Schema{
@@ -137,7 +137,7 @@ func NewTestServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) 
 		server,
 		&mcp.Tool{
 			Name:        "SyncData",
-			Description: "SyncData\nSynchronizes data between the client and server.\nThis operation may take several minutes depending on the data size.",
+			Description: "SyncData\nSynchronizes data between the client and server.\nThis operation may take several minutes depending on the data size.\n\nSyncDataRequest\nRequest message for synchronizing data.\nThe sync operation will process all pending changes since the last sync.",
 			InputSchema: &jsonschema.Schema{
 				Type: "object",
 				Properties: map[string]*jsonschema.Schema{
@@ -165,7 +165,7 @@ func NewTestServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption) 
 		server,
 		&mcp.Tool{
 			Name:        "ProcessPayment",
-			Description: "ProcessPayment - Processes a payment transaction.\n\nThis is a test RPC for demonstrating multiline comments.\nIt includes special characters like \"quotes\" and \\backslashes\\.\nMultiple lines should be properly escaped in the generated code.",
+			Description: "ProcessPayment - Processes a payment transaction.\n\nThis is a test RPC for demonstrating multiline comments.\nIt includes special characters like \"quotes\" and \\backslashes\\.\nMultiple lines should be properly escaped in the generated code.\n\nProcessPaymentRequest\nRequest for processing a payment.",
 			InputSchema: &jsonschema.Schema{
 				Type: "object",
 				Properties: map[string]*jsonschema.Schema{

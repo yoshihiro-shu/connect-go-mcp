@@ -60,11 +60,15 @@ func generateServerWithTools(g *protogen.GeneratedFile, service parser.Service) 
 		// ツール名は常にRPCメソッド名を使用（MCP命名規則 ^[a-zA-Z0-9_-]{1,64}$ に準拠）
 		toolName := method.Name
 
-		// 説明はコメントを優先
-		description := method.Comment
-		if description == "" {
-			description = method.RequestComment
+		// 説明はRPCコメントとリクエストコメントを両方含める
+		var descriptionParts []string
+		if method.Comment != "" {
+			descriptionParts = append(descriptionParts, method.Comment)
 		}
+		if method.RequestComment != "" {
+			descriptionParts = append(descriptionParts, method.RequestComment)
+		}
+		description := strings.Join(descriptionParts, "\n\n")
 		if description == "" {
 			description = "Call " + method.Name + " method"
 		}
