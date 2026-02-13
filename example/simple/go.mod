@@ -1,8 +1,8 @@
 module github.com/yoshihiro-shu/connect-go-mcp/example/simple
 
-go 1.23.0
+go 1.25.0
 
-toolchain go1.24.1
+toolchain go1.26.0
 
 require (
 	connectrpc.com/connect v1.18.1
