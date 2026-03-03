@@ -63,6 +63,17 @@ func (h *ToolHandler) httpRequest(ctx context.Context, req *mcp.CallToolRequest,
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
+		body, _ := io.ReadAll(resp.Body)
+		var wireErr struct {
+			Code    string `json:"code"`
+			Message string `json:"message"`
+		}
+		if err := json.Unmarshal(body, &wireErr); err == nil && wireErr.Message != "" {
+			return &mcp.CallToolResult{
+				Content: []mcp.Content{&mcp.TextContent{Text: wireErr.Message}},
+				IsError: true,
+			}, nil
+		}
 		return nil, fmt.Errorf("status code: %d", resp.StatusCode)
 	}
 
