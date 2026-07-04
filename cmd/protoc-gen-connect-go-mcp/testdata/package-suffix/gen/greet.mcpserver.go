@@ -27,7 +27,7 @@ func NewGreetServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption)
 				Properties: map[string]*jsonschema.Schema{
 					"name": {
 						Type:        "string",
-						Description: "name",
+						Description: "Name",
 					},
 				},
 			},
@@ -51,7 +51,7 @@ func NewGreetServiceMCPServer(baseURL string, opts ...connectgomcp.ClientOption)
 				Properties: map[string]*jsonschema.Schema{
 					"message": {
 						Type:        "string",
-						Description: "message",
+						Description: "Message",
 					},
 				},
 			},
