@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package trailing.v1;
+
+option go_package = "github.com/yoshihiro-shu/connect-go-mcp/cmd/protoc-gen-connect-go-mcp/testdata/trailing-comments/gen;trailingv1";
+
+// Search service
+service SearchService {
+  // Search RPC
+  rpc Search(SearchRequest) returns (SearchResponse) {}
+}
+
+message SearchRequest {
+  string query = 1; // Search query (required)
+  int32 limit = 2;  // Maximum number of results to return
+}
+
+message SearchResponse {
+  string result = 1; // Result payload
+}
