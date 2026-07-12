@@ -75,7 +75,11 @@ func ParseMethod(m *protogen.Method) Method {
 
 // ParseField はフィールド情報をパースします
 func ParseField(field *protogen.Field) Field {
+	// Leading コメントを優先し、無ければ行末(Trailing)コメントにフォールバックします
 	comment := extractComment(field.Comments.Leading)
+	if comment == "" {
+		comment = extractComment(field.Comments.Trailing)
+	}
 
 	return Field{
 		Name:        string(field.Desc.Name()), //　FIX: リクエストの構造体と同じ名前になっていない

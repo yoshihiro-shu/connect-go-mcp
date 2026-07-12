@@ -103,6 +103,76 @@ func TestGenerate(t *testing.T) {
 	assert.Contains(t, content, `"greet.v1.GreetService/Ping"`)
 }
 
+// TestGenerateTrailingComments compiles a real .proto file whose field
+// comments are written at the end of the line (trailing comments) and verifies
+// that the plugin reflects them in the generated MCP server. This guards the
+// fix where ParseField only read leading comments, causing field descriptions
+// to fall back to the field name and required detection to be silently skipped.
+func TestGenerateTrailingComments(t *testing.T) {
+	t.Parallel()
+
+	// protoc を直接使い、--include_source_info でコメント情報を保持したまま
+	// ファイル記述子を取得する（実際の buf generate と同じ条件）
+	stdout, stderr, exitCode := testRunProtocCommand(t,
+		"--descriptor_set_out=/dev/stdout",
+		"--include_source_info",
+		"--include_imports",
+		"--proto_path=testdata/trailing-comments",
+		"testdata/trailing-comments/trailing.proto",
+	)
+
+	assert.Equal(t, exitCode, 0, "protoc command failed: %s", stderr.String())
+
+	var fileDescriptorSet descriptorpb.FileDescriptorSet
+	err := proto.Unmarshal(stdout.Bytes(), &fileDescriptorSet)
+	assert.Nil(t, err)
+
+	var trailingFileDesc *descriptorpb.FileDescriptorProto
+	for _, file := range fileDescriptorSet.File {
+		if file.GetName() == "trailing.proto" {
+			trailingFileDesc = file
+			break
+		}
+	}
+	assert.NotNil(t, trailingFileDesc, "trailing.proto not found in descriptor set")
+
+	compilerVersion := &pluginpb.Version{
+		Major:  ptr(int32(0)),
+		Minor:  ptr(int32(0)),
+		Patch:  ptr(int32(1)),
+		Suffix: ptr("test"),
+	}
+
+	req := &pluginpb.CodeGeneratorRequest{
+		FileToGenerate:        []string{trailingFileDesc.GetName()},
+		Parameter:             ptr("paths=source_relative"),
+		ProtoFile:             fileDescriptorSet.File,
+		SourceFileDescriptors: fileDescriptorSet.File,
+		CompilerVersion:       compilerVersion,
+	}
+	rsp := testGenerate(t, req)
+	assert.Nil(t, rsp.Error)
+	assert.Equal(t, len(rsp.File), 1)
+
+	if len(rsp.File) == 0 {
+		t.Fatal("No files generated")
+	}
+
+	content := rsp.File[0].GetContent()
+	assert.NotZero(t, content)
+
+	// 行末コメントが各プロパティの Description に反映される
+	// （フィールド名 "query"/"limit" へのフォールバックではない）
+	assert.Contains(t, content, `Description: "Search query (required)",`)
+	assert.Contains(t, content, `Description: "Maximum number of results to return",`)
+	assert.NotContains(t, content, `Description: "query",`)
+	assert.NotContains(t, content, `Description: "limit",`)
+
+	// 行末コメントの "required" が JSON Schema の Required に反映される
+	assert.Contains(t, content, "Required: []string{")
+	assert.Contains(t, content, `"query",`)
+}
+
 func TestGenerateMatchesBufOutput(t *testing.T) {
 	t.Parallel()
 
